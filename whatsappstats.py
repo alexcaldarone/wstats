@@ -81,11 +81,12 @@ def checkList(chatlist):
     for i in range(1, len(chatlist)):
         for j in chatlist[i][0:2]+chatlist[i][3:5]+chatlist[i][6:10]:
             if j not in numbers:
-                chatlist[i-1] += chatlist[i]
                 if i not in removel:
                     removel.append(i)
-    for ind in removel:
-        chatlist.remove(chatlist[ind])
+                    chatlist[i-1] += chatlist[i]
+                break
+    for i in range(0, len(removel)):
+        chatlist = chatlist[:removel[i]-i]+chatlist[removel[i]-i+1:]
     return chatlist
 
 ## Conta il numero di messaggi inviati da ogni partecipante
@@ -184,7 +185,10 @@ def wordPerUser(worddict, message):
 def mexAveLength(mexnum, worddict):
     avelength = dict()
     for i in mexnum:
-        avelength[i] = worddict[i]/mexnum[i]
+        if i == None:
+            continue
+        else:
+            avelength[i] = worddict[i]/mexnum[i]
     return avelength
 
 # Main
@@ -206,7 +210,10 @@ def main():
         MessageList.append(Message(chat[i]))
         numMessaggi = countMessage(numMessaggi, MessageList[i-1])
         mexPerDay = dayMessage(mexPerDay, MessageList[i-1])
-        mexWeekDay = weekDayMessage(mexWeekDay, MessageList[i-1])
+        try:
+            mexWeekDay = weekDayMessage(mexWeekDay, MessageList[i-1])
+        except ValueError:
+            continue
         mexTypes = typeOfMessage(mexTypes, MessageList[i-1])
         timeMex = timeMessage(timeMex, MessageList[i-1])
         beginMess = chatBegins(beginMess, MessageList, lastdate)
