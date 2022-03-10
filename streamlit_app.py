@@ -9,9 +9,9 @@ st.markdown(''' #### _Discover the **secrets** behind your chats!_
 With this simple app you will be able to analyze:
 - :iphone: The total number of messages sent by each participant
 - :date: How many messages were sent in each conversation
-- :calendar: How many messages were sent on each weekday (?)
-- :watch: What time of day do you chat the most?
-- :file_folder: How many of your messages are media? How many are links?
+- :calendar: How many messages were sent on each conversation
+- :watch: What time of day you chat the most
+- :file_folder: How many of your messages are media 
 - :speech_balloon: Who is the conversation starter?
 - :memo: Who writes the longest messages on average?
 -----
@@ -273,6 +273,13 @@ else:
         fig6, ax6 = plt.subplots()
         ax6.pie(list(beginMess.values()), labels=list(beginMess.keys()), autopct='%1.2f%%')
         ax6.axis('equal')
+
+        fig7, ax7 = plt.subplots()
+        ax7.barh(list(avelen.keys()), list(avelen.values()), align='center')
+        ax7.set_yticks(list(avelen.keys()))
+        ax7.invert_yaxis()  # labels read top-to-bottom
+        ax7.set_xlabel('Average message length')
+        ax7.set_title('Average participant message length')
     st.success('Done')
     
 
@@ -281,7 +288,7 @@ else:
     with col1:
         st.metric('Total messages (includes update messages)', sum(numMessaggi.values()))
         for i in numMessaggi:
-            if i != None:
+            if i != None and i != 'None':
                 st.write(i+':', numMessaggi[i])
     with col2:
         st.pyplot(fig1)
@@ -320,9 +327,13 @@ else:
         st.pyplot(fig6)
     
     st.header('Average message length')
-    for i in avelen:
-        if i != None:
-            st.write(i+"'s average message length is:", round(avelen[i], 2))
+    col9, col10 = st.columns(2)
+    with col9:
+        for i in avelen:
+            if i != None:
+                st.write(i+"'s average message length is:", round(avelen[i], 2))
+    with col10:
+        st.pyplot(fig7)
     
     st.markdown('''
     Created by [Alex Caldarone](https://alexcaldarone.github.io/)''')
