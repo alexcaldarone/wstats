@@ -9,11 +9,13 @@ class Message:
     # @param chatline (str) stringa del messaggio
     # @return (Message) tipo costruito
     def __init__(self, chatline):
-        Message.date = chatline[6:10]+'/'+chatline[3:5]+'/'+chatline[0:2]
-        Message.time = chatline[12:17]
-        Message.author = Message.def_author(self, chatline)
-        Message.content = Message.def_content(self, chatline)
-        Message.type = Message.def_type(self, chatline)
+        self.date = chatline[6:10]+'/'+chatline[3:5]+'/'+chatline[0:2]
+        self.time = chatline[12:17]
+        self.author = self.def_author(self, chatline)
+        self.content = self.def_content(self, chatline)
+        self.type = self.def_type(self, chatline)
+        self.weekday = self.weekDayMessage()
+
     
     ## converisone a stringa
     def __str__(self):
@@ -53,3 +55,7 @@ class Message:
         else:
             messType = 'Text'
         return messType
+    
+    def weekDayMessage(self):
+        weekday = datetime.date(int(self.date[0:4]), int(self.date[5:7]), int(self.date[8:10])).weekday()
+        return weekday
