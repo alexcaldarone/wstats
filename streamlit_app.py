@@ -9,7 +9,7 @@ st.markdown(''' #### _Discover the **secrets** behind your chats!_
 With this simple app you will be able to analyze:
 - :iphone: The total number of messages sent by each participant
 - :date: How many messages were sent in each conversation
-- :calendar: How many messages were sent on each conversation
+- :calendar: How many messages were sent on each day
 - :watch: What time of day you chat the most
 - :file_folder: How many of your messages are media 
 - :speech_balloon: Who is the conversation starter?
