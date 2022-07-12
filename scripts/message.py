@@ -1,3 +1,4 @@
+import datetime
 ## Classe Message
 # @var author (str) autore del messaggio
 # @var date (str) data di invio del messaggio
@@ -11,11 +12,22 @@ class Message:
     def __init__(self, chatline):
         self.date = chatline[6:10]+'/'+chatline[3:5]+'/'+chatline[0:2]
         self.time = chatline[12:17]
-        self.author = self.def_author(self, chatline)
-        self.content = self.def_content(self, chatline)
-        self.type = self.def_type(self, chatline)
+        self.author = self.def_author(chatline)
+        self.content = self.def_content(chatline)
+        self.type = self.def_type(chatline)
         self.weekday = self.weekDayMessage()
-
+    
+    def is_valid_message(self, line): # sposta all'interno del costruttore di Message 
+        '''
+        Determines whether a line from the file is a valid message or the continuation of the previous message.
+        A message is valid if the first characters are the date and the time of the message, otherwise it is the continuation
+        of the previous message
+        '''
+        try: 
+            if datetime.date(int(line[6:10]), int(line[3:5]), int(line[0:2])) and datetime.time(int(line[12:14]), int(line[15:17])):
+                return True
+        except:
+            return False
     
     ## converisone a stringa
     def __str__(self):
@@ -39,10 +51,10 @@ class Message:
     # @param chatline (str) messaggio
     # @return (str) contenuto del messaggio
     def def_content(self, chatline):
-        if Message.author == None:
+        if self.author == None:
             return chatline[21:]
         else:
-            return chatline[21+len(Message.author):]
+            return chatline[21+len(self.author):]
     
     ## Determina il tipo di messaggio
     # @param chatline (str) messaggio
@@ -57,5 +69,6 @@ class Message:
         return messType
     
     def weekDayMessage(self):
+        weekNum = {0: 'Monday', 1:'Tuesday', 2:'Wednesday', 3:'Thursday', 4:'Friday', 5:'Saturday', 6:'Sunday'}
         weekday = datetime.date(int(self.date[0:4]), int(self.date[5:7]), int(self.date[8:10])).weekday()
-        return weekday
+        return weekNum[weekday]

@@ -1,9 +1,10 @@
 from scripts.message import Message
-import datetime
 
 class Analysis:
 
     STATS = {
+        # Keeps track of the participants of the chat
+        "Participants": set(),
         # Keeps track of the days in which the conversations happen
         "Weekday": {
             "Monday": 0,
@@ -32,36 +33,86 @@ class Analysis:
 
         # keeps track of the types of each message
         "Type":{
-
+            "Text": 0,
+            "Media": 0,
+            "Link": 0
         },
 
         # Keeps track of how many messages were sent on each day
         "Days": {
 
+        },
+
+        # Keeps track of the number of messages sent by each participant
+        "Number": {
+
+        },
+        # keeps track of the number of words sent by each participant
+        "NumberWords": {
+
         }
     }
 
-    def update_stats(self, message: Message):
-        self["Weekday"][message.weekDayMessage] += 1
-        # continue with other stuff
+    def __init__(self):
+        self.last_date = None
 
-    def is_valid_message(self, line):
+    def update_stats(self, message: Message): # make all the dictionary checks the same
+        # days
+        if message.date not in self["Days"].keys():
+            self["Days"][message.date] = 1
+        else:
+            self["Days"][message.date] += 1
+            self.last_date = message.date  # save last date analyzd for comparison needed to see who started the chat
+        # weekday
+        self["Weekday"][message.weekday] += 1
+        # participant
+        if message.author not in self["Participants"]:
+            self["Participants"].add(message.author)
+        # type
+        self["Type"][message.type] += 1
+        # number of messages sent
+        if message.author not in self["Number"].keys():
+            self["Number"][message.author] = 1
+        else:
+            self["Number"][message.author] += 1
+        # who began the chat
+        self.chatBegins(message)
+        # time
+        if message.time[0:2] not in self["Time"].keys():
+            self["Time"][message.time[0:2]] = 1
+        else:
+            self["Time"][message.time[0:2]] += 1
+        # word counter
+        if message.author in self["NumberWords"].keys():
+            self["NumberWords"][message.author] += len(message.content.split(' '))
+        else:
+            self["NumberWords"][message.author] = len(message.content.split(' '))
+    
+    def chatBegins(self, message: Message):
         '''
-        Determines whether a line from the file is a valid message or the continuation of the previous message.
-        A message is valid if the first characters are the date and the time of the message, otherwise it is the continuation
-        of the previous message
+        Determines who started the chat
         '''
-        try: 
-            if datetime.date(int(line[6:10]), int(line[3:5]), int(line[0:2])) and datetime.time(int(line[12:14]), int(line[15:17])):
-                return True
-        except:
-            return False
+        print("message.date:", message.date)
+        print("max:", self.last_date)
+        if self.last_date != message.date: 
+            if message.author in self["Started"].keys():
+                self["Started"][message.author] += 1
+            else:
+                self["Started"][message.author] = 1
     
     def __getitem__(self, st):
         if st in self.STATS.keys():
             return self.STATS[st]
         else:
             raise IndexError("Category not present in the stats.")
+    
+    def calculate_avelength(self):
+        for p in self["Participants"]:
+            if p != None:
+                self["AveLength"][p] = self["NumberWords"][p] / self["Number"][p]
+
+    def dowload_json(self):
+        pass
 
 if __name__ == '__main__':
     a = Analysis()
