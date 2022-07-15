@@ -1,11 +1,11 @@
 import streamlit as st
 import matplotlib.pyplot as plt
+import json
+from io import StringIO
 from scripts.message import Message
 from scripts.analysis import Analysis
-from io import StringIO
-import json
 from scripts.json_set_encoder import SetEncoder
-
+import time
 
 
 st.title("WhatsApp Stats")
@@ -13,8 +13,8 @@ st.markdown(''' #### _Discover the **secrets** behind your chats!_
 
 With this simple app you will be able to analyze:
 - :iphone: The total number of messages sent by each participant
-- :date: How many messages were sent in each conversation
-- :calendar: How many messages were sent on each day
+- :incoming_envelope: How many messages were sent in each conversation
+- :calendar: How many messages were sent on each weekday
 - :watch: What time of day you chat the most
 - :file_folder: How many of your messages are media 
 - :speech_balloon: Who is the conversation starter?
@@ -39,15 +39,16 @@ else:
     last_message_analyzed = None
     for line in stringio:
         chatline = line.strip()
-        if Message.is_valid_message(Message, line): # check if the line if valid message
+        if Message.is_valid_message(Message, line): # check if the line is valid message
             message = Message(line) 
             analysis.update_stats(message)
             last_message_analyzed = message
-        else:
+        else: # if it isn't a valid message then it's the continuation of the previous message
             last_message_analyzed.content += line
             analysis["NumberWords"][last_message_analyzed.author] += len(line.split(' ')) # update length of message
     analysis.calculate_avelength()
-
+    
+    # Charts
     fig1, ax1 = plt.subplots()
     ax1.pie(list(analysis["Number"].values()), labels=list(analysis["Number"].keys()), autopct='%1.2f%%')
     ax1.axis('equal')
@@ -144,5 +145,6 @@ else:
         mime="text"
     )
 
+    st.markdown("---")
     st.markdown('''
     Created by [Alex Caldarone](https://alexcaldarone.github.io/)''')

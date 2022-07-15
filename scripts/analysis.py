@@ -1,7 +1,16 @@
 from scripts.message import Message
 
 class Analysis:
+    '''
+    A class to contain the statistics of a whatsapp chat
 
+    Attributes
+    --------------------
+        self.STATS: dict
+            Dictionary containing the statistics of the chat
+        self.last_date: str
+            Saves the date of the last message analyzed (used to determine who started a conversation)
+    '''
     STATS = {
         # Keeps track of the participants of the chat
         "Participants": set(),
@@ -54,9 +63,18 @@ class Analysis:
     }
 
     def __init__(self):
-        self.last_date = None
+        '''Constructor'''
+        self.last_date = None # attribute used to determine who started a conversation
 
     def update_stats(self, message: Message): # make all the dictionary checks the same
+        '''
+        Updates the STATS dictionary with the statistics from a message passed as argument
+
+        Parameters
+        --------------------
+            message: Message 
+                object containing the message to analyze
+        '''
         # days
         if message.date not in self["Days"].keys():
             self["Days"][message.date] = 1
@@ -91,6 +109,11 @@ class Analysis:
     def chatBegins(self, message: Message):
         '''
         Determines who started the chat
+
+        Parameters
+        --------------------
+            message: Message 
+                object containing the message to analyze
         '''
         print("message.date:", message.date)
         print("max:", self.last_date)
@@ -101,18 +124,31 @@ class Analysis:
                 self["Started"][message.author] = 1
     
     def __getitem__(self, st):
+        '''
+        Returns the dictionary in STATS with name $st
+
+        Parameters
+        --------------------
+            st: str
+                Name of dictionary to be returned
+        
+        Returns
+        --------------------
+            self.STATS[st]: dict
+        '''
         if st in self.STATS.keys():
             return self.STATS[st]
         else:
             raise IndexError("Category not present in the stats.")
     
     def calculate_avelength(self):
+        '''
+        Calculates the average length of the messages sent by each participant in the chat
+        '''
         for p in self["Participants"]:
             if p != None:
                 self["AveLength"][p] = self["NumberWords"][p] / self["Number"][p]
 
-    def dowload_json(self):
-        pass
 
 if __name__ == '__main__':
     a = Analysis()
