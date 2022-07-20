@@ -64,6 +64,14 @@ class Analysis:
 
     def __init__(self):
         '''Constructor'''
+        # clearing dictionaries 
+        self["Participants"].clear()
+        self["Time"].clear()
+        self["Started"].clear()
+        self["AveLength"].clear()
+        self["Days"].clear()
+        self["Number"].clear()
+        self["NumberWords"].clear()
         self.last_date = None # attribute used to determine who started a conversation
 
     def update_stats(self, message: Message): # make all the dictionary checks the same
@@ -115,8 +123,6 @@ class Analysis:
             message: Message 
                 object containing the message to analyze
         '''
-        print("message.date:", message.date)
-        print("max:", self.last_date)
         if self.last_date != message.date: 
             if message.author in self["Started"].keys():
                 self["Started"][message.author] += 1
