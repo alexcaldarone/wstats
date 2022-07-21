@@ -37,15 +37,18 @@ else:
     analysis = Analysis()
     stringio = StringIO(chatfile.getvalue().decode("utf-8"))
     last_message_analyzed = None
-    for line in stringio:
+    for i, line in enumerate(stringio):
+        if i == 0:
+            continue  # skip first chat line
         chatline = line.strip()
-        if Message.is_valid_message(Message, line): # check if the line is valid message
+        if Message.is_valid_message(Message, line):  # check if the line is valid message
             message = Message(line) 
             analysis.update_stats(message)
             last_message_analyzed = message
-        else: # if it isn't a valid message then it's the continuation of the previous message
-            last_message_analyzed.content += line
-            analysis["NumberWords"][last_message_analyzed.author] += len(line.split(' ')) # update length of message
+        else:  # if it isn't a valid message then it's the continuation of the previous message
+            if last_message_analyzed:
+                last_message_analyzed.content += line
+                analysis["NumberWords"][last_message_analyzed.author] += len(line.split(' ')) # update length of message
     analysis.calculate_avelength()
     
     # Charts
@@ -82,7 +85,6 @@ else:
     ax7.set_xlabel('Average message length')
     ax7.set_title('Average participant message length')
     st.success('Done')
-    
 
     st.header("Number of messages")
     col1, col2 = st.columns(2)
@@ -139,7 +141,7 @@ else:
     st.markdown("---")
 
     st.download_button(
-        label = "Download chat data as JSON",
+        label="Download chat data as JSON",
         data=json.dumps(analysis.STATS, cls=SetEncoder),
         file_name="chat_stats.json",
         mime="text"
