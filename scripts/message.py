@@ -21,7 +21,7 @@ class Message:
     '''
     def __init__(self, chatline):
         '''constructor'''
-        self.date = chatline[6:10]+'/'+chatline[3:5]+'/'+chatline[0:2]
+        self.date = datetime.datetime.strptime(chatline[:15], '%d/%m/%y, %H:%M')
         self.time = chatline[12:17]
         self.author = self.def_author(chatline)
         self.content = self.def_content(chatline)
@@ -44,9 +44,9 @@ class Message:
             True if the message is valid, False otherwise 
         '''
         try: 
-            if datetime.date(int(line[6:10]), int(line[3:5]), int(line[0:2])) and datetime.time(int(line[12:14]), int(line[15:17])):
+            if datetime.datetime.strptime(line[:15], '%d/%m/%y, %H:%M'):
                 return True
-        except:
+        except Exception as e:
             return False
     
     def __str__(self):
@@ -71,11 +71,8 @@ class Message:
         if ':' not in chatline:
             author = 'None'
             return author
-        for i in range(20, len(chatline)):
-            if chatline[i] == ':':
-                return author
-            else:
-                author += chatline[i]
+
+        return chatline[18:].split(':')[0]
     
     def def_content(self, chatline):
         '''
@@ -126,5 +123,5 @@ class Message:
             Day of the week on which message was sent (str)
         '''
         weekNum = {0: 'Monday', 1:'Tuesday', 2:'Wednesday', 3:'Thursday', 4:'Friday', 5:'Saturday', 6:'Sunday'}
-        weekday = datetime.date(int(self.date[0:4]), int(self.date[5:7]), int(self.date[8:10])).weekday()
+        weekday = self.date.weekday()
         return weekNum[weekday]

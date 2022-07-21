@@ -84,10 +84,11 @@ class Analysis:
                 object containing the message to analyze
         '''
         # days
-        if message.date not in self["Days"].keys():
-            self["Days"][message.date] = 1
+        message_date = str(message.date)
+        if message_date not in self["Days"].keys():
+            self["Days"][message_date] = 1
         else:
-            self["Days"][message.date] += 1
+            self["Days"][message_date] += 1
             self.last_date = message.date  # save last date analyzd for comparison needed to see who started the chat
         # weekday
         self["Weekday"][message.weekday] += 1
