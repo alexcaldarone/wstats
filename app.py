@@ -75,7 +75,7 @@ else:
     ax5.axis('equal')
 
     fig6, ax6 = plt.subplots()
-    ax6.pie(list(analysis["Started"].values()), labels=list(analysis["Started"].keys()), )
+    ax6.pie(list(analysis["Started"].values()), labels=list(analysis["Started"].keys()), autopct='%1.2f%%')
     ax6.axis('equal')
 
     fig7, ax7 = plt.subplots()
