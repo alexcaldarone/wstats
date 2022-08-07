@@ -116,7 +116,6 @@ class Analysis:
             self["NumberWords"][message.author] += len(message.content.split(' '))
         else:
             self["NumberWords"][message.author] = len(message.content.split(' '))
-        print(self.STATS)
   
     def chatBegins(self, message: Message):
         '''
