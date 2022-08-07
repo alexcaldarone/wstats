@@ -21,7 +21,7 @@ class Message:
     '''
     def __init__(self, chatline):
         '''constructor'''
-        self.date = datetime.datetime.strptime(chatline[:17], '%d/%m/%y, %H:%M')
+        self.date = datetime.datetime.strptime(chatline[:17], '%d/%m/%Y, %H:%M')
         self.time = chatline[12:17]
         self.author = self.def_author(chatline)
         self.content = self.def_content(chatline)
@@ -44,7 +44,7 @@ class Message:
             True if the message is valid, False otherwise 
         '''
         try: 
-            if datetime.datetime.strptime(line[:17], '%d/%m/%y, %H:%M'):
+            if datetime.datetime.strptime(line[:17], '%d/%m/%Y, %H:%M'):
                 return True
         except Exception as e:
             return False
