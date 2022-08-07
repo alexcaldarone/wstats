@@ -43,7 +43,9 @@ else:
         chatline = line.strip()
         if Message.is_valid_message(Message, line):  # check if the line is valid message
             message = Message(line) 
+            st.write(message)
             analysis.update_stats(message)
+            st.write(analysis.STATS)
             last_message_analyzed = message
         else:  # if it isn't a valid message then it's the continuation of the previous message
             if last_message_analyzed:
