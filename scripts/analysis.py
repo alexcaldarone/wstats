@@ -42,9 +42,7 @@ class Analysis:
 
         # keeps track of the types of each message
         "Type":{
-            "Text": 0,
-            "Media": 0,
-            "Link": 0
+
         },
 
         # Keeps track of how many messages were sent on each day
@@ -72,7 +70,7 @@ class Analysis:
         self["Days"].clear()
         self["Number"].clear()
         self["NumberWords"].clear()
-        self["Type"] = {"Text":0, "Media":0, "Link":0} # resets all the values of the type dictionay to zero
+        self["Type"].clear() # resets all the values of the type dictionay to zero
         self.last_date = None # attribute used to determine who started a conversation
 
     def update_stats(self, message: Message): # make all the dictionary checks the same
@@ -97,7 +95,10 @@ class Analysis:
         if message.author not in self["Participants"]:
             self["Participants"].add(message.author)
         # type
-        self["Type"][message.type] += 1
+        if message.type not in self["Type"]:
+            self["Type"][message.type] = 1
+        else:
+            self["Type"][message.type] += 1
         # number of messages sent
         if message.author not in self["Number"].keys():
             self["Number"][message.author] = 1
