@@ -21,7 +21,7 @@ class Message:
     '''
     def __init__(self, chatline):
         '''constructor'''
-        self.date = datetime.datetime.strptime(chatline[:15], '%d/%m/%y, %H:%M')
+        self.date = datetime.datetime.strptime(chatline[:17], '%d/%m/%y, %H:%M')
         self.time = chatline[12:17]
         self.author = self.def_author(chatline)
         self.content = self.def_content(chatline)
