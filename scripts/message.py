@@ -72,7 +72,7 @@ class Message:
             author = 'None'
             return author
 
-        return chatline[18:].split(':')[0]
+        return chatline[21:].split(':')[0]
     
     def def_content(self, chatline):
         '''
