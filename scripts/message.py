@@ -72,7 +72,7 @@ class Message:
             author = 'None'
             return author
 
-        return chatline[21:].split(':')[0]
+        return chatline[20:].split(':')[0]
     
     def def_content(self, chatline):
         '''
@@ -88,9 +88,9 @@ class Message:
             Content of the message (str)
         '''
         if self.author == None:
-            return chatline[21:]
+            return chatline[20:]
         else:
-            return chatline[21+len(self.author):]
+            return chatline[20+len(self.author):]
     
     def def_type(self, chatline):
         '''
