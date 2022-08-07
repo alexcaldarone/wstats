@@ -13,3 +13,4 @@ With this simple app you will be able to analyze:
 
 ### To do:
 - Add tests
+- Rendere la creazione dell'oggetto datetime indipendente dal formato della data presente nel file (l'oggetto viene creato con qualisiasi formato)
