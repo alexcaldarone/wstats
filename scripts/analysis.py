@@ -72,7 +72,8 @@ class Analysis:
         self["Days"].clear()
         self["Number"].clear()
         self["NumberWords"].clear()
-        self["Type] = dict.fromkeys(self["Type"], 0) # resets all the values of the type dictionay to zero
+        typeOfMessages = set('Text', 'Media', 'Link')
+        self["Type] = dict.fromkeys(typeOfMessages, 0) # resets all the values of the type dictionay to zero
         self.last_date = None # attribute used to determine who started a conversation
 
     def update_stats(self, message: Message): # make all the dictionary checks the same
