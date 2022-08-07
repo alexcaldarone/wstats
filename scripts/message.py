@@ -44,7 +44,7 @@ class Message:
             True if the message is valid, False otherwise 
         '''
         try: 
-            if datetime.datetime.strptime(line[:15], '%d/%m/%y, %H:%M'):
+            if datetime.datetime.strptime(line[:17], '%d/%m/%y, %H:%M'):
                 return True
         except Exception as e:
             return False
