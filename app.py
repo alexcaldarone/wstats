@@ -50,7 +50,7 @@ else:
                 last_message_analyzed.content += line
                 analysis["NumberWords"][last_message_analyzed.author] += len(line.split(' ')) # update length of message
     analysis.calculate_avelength()
-    st.write(analysis.STATS)
+
     # Charts
     fig1, ax1 = plt.subplots()
     ax1.pie(list(analysis["Number"].values()), labels=list(analysis["Number"].keys()), autopct='%1.2f%%')
