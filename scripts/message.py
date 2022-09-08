@@ -1,4 +1,5 @@
 import datetime
+import dateutil.parser as datepars
 
 class Message:
     '''
@@ -21,13 +22,17 @@ class Message:
     '''
     def __init__(self, chatline):
         '''constructor'''
-        self.date = datetime.datetime.strptime(chatline[:17], '%d/%m/%Y, %H:%M')
-        self.time = chatline[12:17]
+        self.date = datepars.parse(chatline.split(',')[0]) # this object is created only if the message is valid (tested before the message is created)
+        self.__datelen = len(chatline.split(',')[0])
+        self.time = chatline.split(',')[1][1:6]
+        self.__timelen = self.__datelen + 1+ len(self.time)
         self.author = self.def_author(chatline)
+        self.__authlen = self.__timelen + 3 + len(self.author) + 2 # length of string until end of author name
         self.content = self.def_content(chatline)
         self.type = self.def_type(chatline)
         self.weekday = self.weekDayMessage()
     
+
     def is_valid_message(self, line): 
         '''
         Determines whether a line from the file is a valid message or the continuation of the previous message.
@@ -44,7 +49,7 @@ class Message:
             True if the message is valid, False otherwise 
         '''
         try: 
-            if datetime.datetime.strptime(line[:17], '%d/%m/%Y, %H:%M'):
+            if datepars.parse(line.split(',')[0]):
                 return True
         except Exception as e:
             return False
@@ -67,12 +72,9 @@ class Message:
             author: str
                 Author of the message
         '''
-        author = ''
-        if ':' not in chatline:
-            author = 'None'
-            return author
+        authstr = chatline.split(',')[1][9:] # string where the author name is
 
-        return chatline[20:].split(':')[0]
+        return authstr.split(':')[0]
     
     def def_content(self, chatline):
         '''
@@ -87,10 +89,7 @@ class Message:
         --------------------
             Content of the message (str)
         '''
-        if self.author == None:
-            return chatline[20:]
-        else:
-            return chatline[20+len(self.author):]
+        return chatline[self.__authlen:]
     
     def def_type(self, chatline):
         '''
@@ -106,9 +105,9 @@ class Message:
             messType: str
                 Type of the message
         '''
-        if '<Media omitted>' in chatline:
+        if '<Media omitted>' in chatline[self.__authlen:]:
             messType = 'Media'
-        elif 'https://' in chatline:
+        elif 'https://' in chatline[self.__authlen:]:
             messType = 'Link'
         else:
             messType = 'Text'
@@ -125,3 +124,12 @@ class Message:
         weekNum = {0: 'Monday', 1:'Tuesday', 2:'Wednesday', 3:'Thursday', 4:'Friday', 5:'Saturday', 6:'Sunday'}
         weekday = self.date.weekday()
         return weekNum[weekday]
+    
+if __name__ == '__main__':
+    line = '03/07/2017, 12:34 - Joe: <Media omitted>'
+    m = Message(line)
+    print(m.date)
+    print(len(str(m.date)))
+    print(m.__datelen)
+    print(m.time)
+    print(m.is_valid_message(line))

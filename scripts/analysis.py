@@ -157,6 +157,7 @@ class Analysis:
         for p in self["Participants"]:
             if p != None:
                 self["AveLength"][p] = self["NumberWords"][p] / self["Number"][p]
+    
 
 
 if __name__ == '__main__':
