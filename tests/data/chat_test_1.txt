@@ -1,0 +1,8 @@
+29/03/22, 20:09 - I messaggi e le chiamate sono crittografati end-to-end. Nessuno al di fuori di questa chat, nemmeno WhatsApp, può leggerne o ascoltarne il contenuto. Tocca per saperne di più.
+29/03/22, 20:09 - User1: Hello,
+29/03/22, 20:09 - User1: I am here
+29/03/22, 20:09 - User1: This is a line with comma,
+29/03/22, 20:09 - User1: Another one with multiple commas,,,,
+29/03/22, 20:09 - User1: ,casual commas,,
+29/03/22, 20:10 - User2: Ok
+29/03/22, 20:10 - User2: .
