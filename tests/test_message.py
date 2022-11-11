@@ -68,16 +68,19 @@ class TestMessage(unittest.TestCase):
             for l in f:
                 
                 message = Message(l)
-
+                
                 if i == 0:
                     # When i == 0, we are reading the first line which does not have an author
+                    i += 1
                     continue
                 elif i < 6:
                     self.assertEqual(message.author, name1)
+                    i += 1
                 else:
                     self.assertEqual(message.author, name2)
+                    i += 1
             
-                i += 1
+                
         
     def test_type(self):
         """
@@ -109,9 +112,31 @@ class TestMessage(unittest.TestCase):
         """
         Test the content attribute
 
-        We need to verify that for every message object the content attribute is equal to that contained in the text file
+        We need to verify that for every message object the content attribute is equal to the text contained in the file
         """
-        pass
+        messages = [
+            " Hello,",
+            " I am here",
+            " This is a line with comma,",
+            " Another one with multiple commas,,,,",
+            " ,casual commas,,",
+            " Ok",
+            " ."
+        ]
+        i = -1 # when i == -1 we are analyzing the first message, which has to be skipped
+
+        with open("tests/data/chat_test_1.txt", "r") as f:
+
+            for l in f:
+
+                if i == -1:
+                    i += 1
+                    continue
+                else:
+                    message = Message(l.strip())
+                    self.assertEqual(message.content, messages[i])
+                    i += 1
+        
 
 if __name__ == '__main__':
     unittest.main()
