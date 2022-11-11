@@ -12,4 +12,5 @@ With this simple app you will be able to analyze:
 
 
 ### To do:
-- Add tests
+- Add tests for analysis class
+- Add tests for different date formats
