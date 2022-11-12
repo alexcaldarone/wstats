@@ -11,8 +11,14 @@ class TestMessage(unittest.TestCase):
 
         with open('tests/data/chat_test_1.txt') as f:
 
-            for l in f:
+            for i, line in enumerate(f):
 
-                message = Message(l)
+                message = Message(line)
 
-                self.assertEqual(message.is_valid_message(l), True)
+                self.assertEqual(message.is_valid_message(line), True)
+
+                if i in [x for x in range(1, 6)]:
+                    self.assertEqual(message.author == 'User1', True)
+
+                if i in [x for x in range(6, 8)]:
+                    self.assertEqual(message.author == 'User2', True)
