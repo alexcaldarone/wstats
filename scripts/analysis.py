@@ -47,7 +47,7 @@ class Analysis:
 
         # Keeps track of how many messages were sent on each day
         "Days": {
-
+            "2022/02/29":7
         },
 
         # Keeps track of the number of messages sent by each participant
@@ -71,6 +71,8 @@ class Analysis:
         self["Number"].clear()
         self["NumberWords"].clear()
         self["Type"].clear() # resets all the values of the type dictionay to zero
+        for key, val in self["Weekday"].items(): # setting the dictionary values to zero
+            self["Weekday"][key] = 0
         self.last_date = None # attribute used to determine who started a conversation
 
     def update_stats(self, message: Message): # make all the dictionary checks the same
