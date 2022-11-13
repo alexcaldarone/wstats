@@ -1,4 +1,4 @@
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/alexcaldarone/wstats/main)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://alexcaldarone-wstats-app-6tzmao.streamlit.app/)
 # WhatsApp Stats
 
 With this simple app you will be able to analyze:
