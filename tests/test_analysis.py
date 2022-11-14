@@ -5,59 +5,6 @@ from scripts.message import Message
 class TestAnalysis(unittest.TestCase):
 
     def setUp(self):
-        # results which are then used for comparison in the tests
-        self.REFERENCE_RESULTS = {
-
-            "Participants": set(["User1", "User2"]),
-            
-            "Weekday": {
-                "Monday": 0,
-                "Tuesday": 7,
-                "Wednesday": 0,
-                "Thursday": 0,
-                "Friday": 0,
-                "Saturday": 0,
-                "Sunday": 0
-            },
-
-            # Keeps track of the time at which the conversations happen
-            "Time": {
-                "20":7
-            },
-
-            # Keeps track of the number of conversations started by each participant
-            "Started": {
-                "User1":1
-            },
-
-            # keeps track of the average message length for each user
-            "AveLength": {
-                "User1":4.4,
-                "User2":2.0
-            },
-
-            # keeps track of the types of each message
-            "Type":{
-                "Text":7
-            },
-
-            # Keeps track of how many messages were sent on each day
-            "Days": {
-                "2022-03-29 00:00:00":7
-            },
-
-            # Keeps track of the number of messages sent by each participant
-            "Number": {
-                "User1":5,
-                "User2":2
-            },
-            # keeps track of the number of words sent by each participant
-            "NumberWords": {
-                "User1":22,
-                "User2":4
-            }
-        
-        }
         # creating the attribute with the chat analyzed using the class
         self.analysis = Analysis()
         with open("tests/data/chat_test_1.txt", "r") as f:
@@ -70,7 +17,6 @@ class TestAnalysis(unittest.TestCase):
         self.analysis.calculate_avelength()
     
     def tearDown(self):
-        self.REFERENCE_RESULTS = None
         self.analysis = None
 
     def test_chatDays(self):
@@ -79,7 +25,9 @@ class TestAnalysis(unittest.TestCase):
         """
         
         days_detected = self.analysis.STATS["Days"]
-        days_correct = self.REFERENCE_RESULTS["Days"]
+        days_correct = {
+                "2022-03-29 00:00:00":7
+            }
 
         self.assertDictEqual(days_correct, days_detected)
 
@@ -88,7 +36,7 @@ class TestAnalysis(unittest.TestCase):
         Testing that participants in the chat are the same
         """
         participants_detected = self.analysis["Participants"]
-        participants_correct = self.REFERENCE_RESULTS["Participants"]
+        participants_correct = set(["User1", "User2"])
 
         self.assertSetEqual(participants_correct, participants_detected)
 
@@ -97,7 +45,9 @@ class TestAnalysis(unittest.TestCase):
         Testing that the times analyzed and the number of messages per hour are the same
         """
         times_detected = self.analysis["Time"]
-        times_correct = self.REFERENCE_RESULTS["Time"]
+        times_correct =  {
+                "20":7
+            }
 
         self.assertDictEqual(times_correct, times_detected)
         
@@ -106,7 +56,15 @@ class TestAnalysis(unittest.TestCase):
         Test if the number of messaged sent on each weekday are correct
         """
         weekday_detected = self.analysis["Weekday"]
-        weekday_correct = self.REFERENCE_RESULTS["Weekday"]
+        weekday_correct = {
+                "Monday": 0,
+                "Tuesday": 7,
+                "Wednesday": 0,
+                "Thursday": 0,
+                "Friday": 0,
+                "Saturday": 0,
+                "Sunday": 0
+            }
 
         self.assertDictEqual(weekday_correct, weekday_detected)
 
@@ -115,7 +73,9 @@ class TestAnalysis(unittest.TestCase):
         Test if the number of chats started by each user is correct
         """
         chat_begins_detected = self.analysis["Started"]
-        chat_begins_correct = self.REFERENCE_RESULTS["Started"]
+        chat_begins_correct = {
+                "User1":1
+            }
 
         self.assertDictEqual(chat_begins_correct, chat_begins_detected)
 
@@ -124,7 +84,10 @@ class TestAnalysis(unittest.TestCase):
         Test that the average message length for each user is correct
         """
         average_length_detected = self.analysis["AveLength"]
-        average_length_correct = self.REFERENCE_RESULTS["AveLength"]
+        average_length_correct = {
+                "User1":4.4,
+                "User2":2.0
+            }
 
         self.assertDictEqual(average_length_correct, average_length_detected)
 
@@ -133,7 +96,10 @@ class TestAnalysis(unittest.TestCase):
         Test if the message count by user is correct
         """
         message_by_user_detected = self.analysis["Number"]
-        message_by_user_correct = self.REFERENCE_RESULTS["Number"]
+        message_by_user_correct = {
+                "User1":5,
+                "User2":2
+            }
 
         self.assertDictEqual(message_by_user_correct, message_by_user_detected)
 
@@ -142,7 +108,9 @@ class TestAnalysis(unittest.TestCase):
         Test if the number of messages of each type is correct
         """
         type_detected = self.analysis["Type"]
-        type_correct = self.REFERENCE_RESULTS["Type"]
+        type_correct = {
+                "Text":7
+            }
 
         self.assertDictEqual(type_correct, type_detected)
 
