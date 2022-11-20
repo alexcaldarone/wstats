@@ -7,7 +7,7 @@ from scripts.analysis import Analysis
 from scripts.json_set_encoder import SetEncoder
 import time
 
-
+st.set_page_config(page_title="WhatsApp Stats")
 st.title("WhatsApp Stats")
 st.markdown(''' #### _Discover the **secrets** behind your chats!_
 
