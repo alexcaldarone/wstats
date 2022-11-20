@@ -5,3 +5,4 @@ install:
   - pip install -r requirements.txt
 script:
   - python -m unittest -v tests.test_message
+  - python -m unittest -v tests.test_analysis

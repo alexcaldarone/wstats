@@ -9,8 +9,3 @@ With this simple app you will be able to analyze:
 - :file_folder: How many of your messages are media 
 - :speech_balloon: Who is the conversation starter?
 - :memo: Who writes the longest messages on average?
-
-
-### To do:
-- Add tests for analysis class
-- Add tests for different date formats
