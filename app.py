@@ -1,11 +1,12 @@
 import streamlit as st
 import matplotlib.pyplot as plt
+from matplotlib.dates import DateFormatter
 import json
 from io import StringIO
 from scripts.message import Message
 from scripts.analysis import Analysis
 from scripts.json_set_encoder import SetEncoder
-import time
+import datetime
 
 st.set_page_config(page_title="WhatsApp Stats")
 st.title("WhatsApp Stats")
@@ -28,8 +29,6 @@ With this simple app you will be able to analyze:
 ''')
 chatfile = st.file_uploader("Upload your chat file.", type='txt')
 
-
-
 if not chatfile:
     st.warning('No chat file uploaded')
     st.stop()
@@ -42,13 +41,14 @@ else:
             continue  # skip first chat line
         chatline = line.strip()
         if Message.is_valid_message(Message, line):  # check if the line is valid message
-            message = Message(line) 
+            message = Message(line)
             analysis.update_stats(message)
             last_message_analyzed = message
         else:  # if it isn't a valid message then it's the continuation of the previous message
             if last_message_analyzed:
                 last_message_analyzed.content += line
-                analysis["NumberWords"][last_message_analyzed.author] += len(line.split(' ')) # update length of message
+                analysis["NumberWords"][last_message_analyzed.author] += len(
+                    line.split(' '))  # update length of message
     analysis.calculate_avelength()
 
     # Charts
@@ -57,17 +57,24 @@ else:
     ax1.axis('equal')
 
     fig2, ax2 = plt.subplots()
-    ax2.bar(list(analysis["Days"].keys()), list(analysis["Days"].values()))
-    ax2.set(xticklabels=[])
+    ax2.bar(
+        [datetime.datetime.strptime(d, '%Y-%m-%d %H:%M:%S') for d in analysis["Days"].keys()],
+        list(analysis["Days"].values()),
+        width=2,
+    )
     ax2.set_ylabel('N° of messages')
+    ax2.xaxis_date()
+    myFmt = DateFormatter("%m-%Y")
+    ax2.xaxis.set_major_formatter(myFmt)
+    ax2.tick_params('x', labelrotation=90)
 
     fig3, ax3 = plt.subplots()
     ax3.barh(list(analysis["Weekday"].keys()), list(analysis["Weekday"].values()))
     ax3.set_title('Weekly chatting patterns')
 
     fig4, ax4 = plt.subplots()
-    ax4.bar(sorted(analysis["Time"].keys()), analysis["Time"].values()) # ricontrolla
-    ax4.set_title('Houly chatting patterns')
+    ax4.bar(sorted(analysis["Time"].keys()), analysis["Time"].values())  # ricontrolla
+    ax4.set_title('Hourly chatting patterns')
     ax2.set_ylabel('N° of messages')
 
     fig5, ax5 = plt.subplots()
@@ -92,21 +99,21 @@ else:
         st.metric('Total messages (includes update messages)', sum(analysis["Number"].values()))
         for i in analysis["Number"]:
             if i != None and i != 'None':
-                st.write(i+':', analysis["Number"][i])
+                st.write(i + ':', analysis["Number"][i])
     with col2:
         st.pyplot(fig1)
-    
+
     st.header("Messages sent per conversation")
     st.pyplot(fig2)
-    
+
     st.header("Messages sent each weekday")
     col3, col4 = st.columns([1, 2])
     with col3:
         for i in analysis["Weekday"]:
-            st.write(i+':', analysis["Weekday"][i])
+            st.write(i + ':', analysis["Weekday"][i])
     with col4:
         st.pyplot(fig3)
-    
+
     st.header('Hourly chatting patterns')
     st.pyplot(fig4)
 
@@ -115,12 +122,12 @@ else:
     with col5:
         st.write('Media includes photos, documents, audios.')
         for i in analysis["Type"]:
-            st.write(i+':', analysis["Type"][i])
+            st.write(i + ':', analysis["Type"][i])
     with col6:
         st.pyplot(fig5)
-    
+
     st.header("Who were the conversations started by?")
-    col7, col8= st.columns(2)
+    col7, col8 = st.columns(2)
     with col7:
         st.metric('Total number of \nconversations', sum(analysis["Started"].values()))
         for i in analysis["Started"]:
@@ -128,16 +135,16 @@ else:
                 st.write(i, 'started', analysis["Started"][i], 'conversations.')
     with col8:
         st.pyplot(fig6)
-    
+
     st.header('Average message length')
     col9, col10 = st.columns(2)
     with col9:
         for i in analysis["AveLength"]:
             if i != None:
-                st.write(i+"'s average message length is:", round(analysis["AveLength"][i], 2))
+                st.write(i + "'s average message length is:", round(analysis["AveLength"][i], 2))
     with col10:
         st.pyplot(fig7)
-    
+
     st.markdown("---")
 
     st.download_button(
