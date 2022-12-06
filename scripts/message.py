@@ -32,6 +32,10 @@ class Message:
         self.type = self.def_type(chatline)
         self.weekday = self.weekDayMessage()
     
+    def to_list(self):
+        attributes = [a for a in vars(self) if not a.startswith('_')]
+        return [self.__getattribute__(a) for a in attributes]
+    
 
     def is_valid_message(self, line): 
         '''
@@ -124,12 +128,3 @@ class Message:
         weekNum = {0: 'Monday', 1:'Tuesday', 2:'Wednesday', 3:'Thursday', 4:'Friday', 5:'Saturday', 6:'Sunday'}
         weekday = self.date.weekday()
         return weekNum[weekday]
-    
-if __name__ == '__main__':
-    line = '03/07/2017, 12:34 - Joe: <Media omitted>'
-    m = Message(line)
-    print(m.date)
-    print(len(str(m.date)))
-    print(m.__datelen)
-    print(m.time)
-    print(m.is_valid_message(line))

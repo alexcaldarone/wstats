@@ -40,16 +40,16 @@ else:
     for i, line in enumerate(stringio):
         if i == 0:
             continue  # skip first chat line
-        chatline = line.strip()
+        #chatline = line.strip()
         if Message.is_valid_message(Message, line):  # check if the line is valid message
-            message = Message(line) 
-            analysis.update_stats(message)
-            last_message_analyzed = message
+            message = Message(line.strip()) 
+            last_message_analyzed = analysis.update_list(message)
         else:  # if it isn't a valid message then it's the continuation of the previous message
             if last_message_analyzed:
-                last_message_analyzed.content += line
-                analysis["NumberWords"][last_message_analyzed.author] += len(line.split(' ')) # update length of message
-    analysis.calculate_avelength()
+                analysis.update_last_message(line)
+    
+    analysis.generate_dataframe()
+    st.write(analysis.stats)
 
     # Charts
     fig1, ax1 = plt.subplots()
