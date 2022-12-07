@@ -24,7 +24,7 @@ class Message:
         '''constructor'''
         self.date = datepars.parse(chatline.split(',')[0]) # this object is created only if the message is valid (tested before the message is created)
         self.__datelen = len(chatline.split(',')[0])
-        self.time = chatline.split(',')[1][1:6]
+        self.time = chatline.split(',')[1][1:6] # change this to time object to handle better in analysis?
         self.__timelen = self.__datelen + 1+ len(self.time)
         self.author = self.def_author(chatline)
         self.__authlen = self.__timelen + 3 + len(self.author) + 2 # length of string until end of author name

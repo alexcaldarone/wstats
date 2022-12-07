@@ -51,6 +51,11 @@ else:
     analysis.generate_dataframe()
     st.write(analysis.stats)
 
+    st.write(analysis.get_messages_per_day())
+    st.write(analysis.get_chat_participants())
+    st.write(analysis.get_messages_by_hour())
+    st.write(analysis.average_message_length_by_user())
+    """
     # Charts
     fig1, ax1 = plt.subplots()
     ax1.pie(list(analysis["Number"].values()), labels=list(analysis["Number"].keys()), autopct='%1.2f%%')
@@ -149,4 +154,4 @@ else:
 
     st.markdown("---")
     st.markdown('''
-    Created by [Alex Caldarone](https://alexcaldarone.github.io/)''')
+    Created by [Alex Caldarone](https://alexcaldarone.github.io/)''')"""
