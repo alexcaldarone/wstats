@@ -49,12 +49,14 @@ else:
                 analysis.update_last_message(line)
     
     analysis.generate_dataframe()
-    st.write(analysis.stats)
-
+    #st.write(analysis.stats)
+    st.write(analysis.get_messages_per_day_per_user())
     st.write(analysis.get_messages_per_day())
     st.write(analysis.get_chat_participants())
     st.write(analysis.get_messages_by_hour())
     st.write(analysis.average_message_length_by_user())
+    st.write(analysis.stats)
+    st.write(analysis.chats_started_by_user())
     """
     # Charts
     fig1, ax1 = plt.subplots()
