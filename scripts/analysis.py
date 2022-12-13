@@ -1,6 +1,9 @@
 from scripts.message import Message
 import nltk
 import pandas as pd
+from collections import Counter
+
+# nltk.download("punkt")
 
 class Analysis:
     """
@@ -125,8 +128,20 @@ class Analysis:
             pandas.core.series.Series
                 Pandas Series containing the number of messages for each type
         """
-        # should I add the types that were not present in the chat with count = 0?
-        return self.stats.groupby("Type")["Content"].count()
+        def get_freq(series, type):
+            """
+            Returns the number of messages on a given weekday if there were any, 
+            zero otherwise.
+            Used to construct the pd.Series object containing all the frequencies
+            """
+            if type not in series.index:
+                return 0
+            return series[type]
+        types_available = ["Text", "Media", "Link"]
+        observed = self.stats.groupby("Type")["Content"].count()
+        res = [get_freq(observed, message_type) for message_type in types_available]
+
+        return pd.Series(data=res, index=types_available)
 
 
     def get_messages_by_weekday(self):
@@ -138,8 +153,21 @@ class Analysis:
             pandas.core.series.Series
                 Pandas Series containing the number of messages on each weekday
         """
-        # should I add the weekdays that were not present in the chat with count = 0?
-        return self.stats.groupby("Weekday")["Content"].count()
+        def get_freq(series, day):
+            """
+            Returns the number of messages on a given weekday if there were any, 
+            zero otherwise.
+            Used to construct the pd.Series object containing all the frequencies
+            """
+            if day not in series.index:
+                return 0
+            return series[day]
+        weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+        observed = self.stats.groupby("Weekday")["Content"].count()
+        res = [get_freq(observed, day) for day in weekdays]
+
+        return pd.Series(data=res, index=weekdays, name="messages_per_weekday") 
 
 
     def get_messages_by_hour(self):
@@ -151,9 +179,21 @@ class Analysis:
             pandas.core.series.Series
                 Pandas Series containing the number of messages each hour
         """
-        # should I add the hours that were not present in the chat with count = 0?
+        def get_freq(series, hour):
+            """
+            Returns the number of messages at a given hour if there were any, 
+            zero otherwise.
+            Used to construct the pd.Series object containing all the frequencies
+            """
+            if hour not in series.index:
+                return 0
+            return series[hour]
+        
         self.stats["hour"] = self.stats["Time"].apply(lambda x: x[0:2])
-        return self.stats.groupby("hour")["Content"].count()
+        observed = self.stats.groupby("hour")["Content"].count() # surflous ?
+        res = [get_freq(observed, str(i)) for i in range(0, 24)]
+        
+        return pd.Series(data=res, index=range(0, 24))
 
 
     def get_messages_by_hour_by_user(self):
@@ -192,7 +232,7 @@ class Analysis:
             pandas.core.series.Series
                 Pandas Series containing the number of conversations started by each user
         """
-        # should I add the hours that were not present in the chat with count = 0?
+        
         res = []
         unique_date = self.stats["Date"].unique()
 
@@ -215,3 +255,29 @@ class Analysis:
                 Participants in the chat
         """
         return self.stats["Author"].unique()
+    
+    def get_most_common_messages(self): # keep or change (?)
+        return self.stats["Content"].value_counts()
+    
+    def get_most_common_words(self):
+
+        # don't need this at the moment
+        self.stats["tokenized_messages"] = self.stats["Content"].apply(
+            lambda x: nltk.tokenize.word_tokenize(x)
+        )
+
+        words = Counter(
+            (" ".join(self.stats["Content"])).split()
+            )
+        # returns dictionary (change to another type for better manupulation?)
+        return words
+    
+    def get_most_common_words_per_user(self):
+        pass
+
+    def get_count_of_word(self, word):
+        """
+        Returns the number of times the input word appaeared in the chat
+        """
+        pass
+         
