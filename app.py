@@ -29,7 +29,6 @@ With this simple app you will be able to analyze:
 chatfile = st.file_uploader("Upload your chat file.", type='txt')
 
 
-
 if not chatfile:
     st.warning('No chat file uploaded')
     st.stop()
@@ -49,8 +48,9 @@ else:
                 analysis.update_last_message(line)
     
     analysis.generate_dataframe()
+
     # st.write(analysis.get_messages_by_weekday())
-    st.write(analysis.stats)
+    # st.write(analysis.stats)
     # st.write(analysis.get_messages_by_type())
     # st.write(analysis.get_messages_per_day_per_user())
     # st.write(analysis.get_messages_per_day())
@@ -59,8 +59,13 @@ else:
     # st.write(analysis.average_message_length_by_user())
     # st.write(analysis.stats)
     # st.write(analysis.chats_started_by_user())
-    st.write(analysis.get_most_common_words())
+    # st.write(analysis.get_most_common_words())
+    # st.write(analysis.stats)
+    # st.write(analysis.get_most_common_words_per_user("User2"))
+    # st.write(analysis.get_count_of_word("with"))
+    # analysis.text_regularization()
     st.write(analysis.stats)
+
     """
     # Charts
     fig1, ax1 = plt.subplots()

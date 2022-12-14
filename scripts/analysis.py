@@ -4,6 +4,7 @@ import pandas as pd
 from collections import Counter
 
 # nltk.download("punkt")
+# move the installation of these libraries into setup.py?
 
 class Analysis:
     """
@@ -67,7 +68,9 @@ class Analysis:
             line: str
                 Line to be analyzed
         """
-        self.__tempList[-1].content += line
+        # necessary because of conversion of the message object to list
+        CONTENT_INDEX = 3 
+        self.__tempList[-1][CONTENT_INDEX] += line
 
 
     def generate_dataframe(self):
@@ -137,6 +140,7 @@ class Analysis:
             if type not in series.index:
                 return 0
             return series[type]
+        
         types_available = ["Text", "Media", "Link"]
         observed = self.stats.groupby("Type")["Content"].count()
         res = [get_freq(observed, message_type) for message_type in types_available]
@@ -162,6 +166,7 @@ class Analysis:
             if day not in series.index:
                 return 0
             return series[day]
+        
         weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
         observed = self.stats.groupby("Weekday")["Content"].count()
@@ -259,25 +264,57 @@ class Analysis:
     def get_most_common_messages(self): # keep or change (?)
         return self.stats["Content"].value_counts()
     
-    def get_most_common_words(self):
-
-        # don't need this at the moment
+    def __tokenize_messages(self):
+        """
+        Hidden method to tokenize each message
+        """
         self.stats["tokenized_messages"] = self.stats["Content"].apply(
             lambda x: nltk.tokenize.word_tokenize(x)
         )
 
+    def get_most_common_words(self):
+        # don't need this at the moment
+        if "tokenized_messages" not in self.stats.columns:
+            self.__tokenize_messages()
+        
         words = Counter(
             (" ".join(self.stats["Content"])).split()
-            )
+            ) # save this as attribute to use later ?
         # returns dictionary (change to another type for better manupulation?)
         return words
     
-    def get_most_common_words_per_user(self):
-        pass
+    def get_most_common_words_per_user(self, user):
+        user_messages = self.stats[self.stats["Author"] == user]
+
+        user_words = Counter(
+            (" ".join(user_messages["Content"])).split()
+        )
+        return user_words
+
 
     def get_count_of_word(self, word):
         """
         Returns the number of times the input word appaeared in the chat
         """
-        pass
+        words = Counter(
+            (" ".join(self.stats["Content"])).split()
+            )
+        
+        if word not in words.keys():
+            return None
+        return words[word]
+    
+    
+    def text_regularization(self):
+        """
+        Method to regularize the chat messages
+        """
+        # should I store as a column or as separate series?
+        # or create a separate df with just messages of text type?
+        self.stats["regular_text"] = self.stats["Content"][self.stats["Type"] == "Text"]
+        
+        # steps to implement:
+        # - remove punctuation (non alpha-numeric characters)
+        # - turn all words to lowercase 
+        # - remove all stopwords
          
