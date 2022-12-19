@@ -63,7 +63,7 @@ else:
     # st.write(analysis.stats)
     # st.write(analysis.get_most_common_words_per_user("User2"))
     # st.write(analysis.get_count_of_word("with"))
-    # analysis.text_regularization()
+    analysis.text_regularization()
     st.write(analysis.stats)
 
     """

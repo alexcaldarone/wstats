@@ -36,7 +36,7 @@ class Analysis:
         """Constructor"""
         self.__tempList = []
         self.stats = None
-
+        self.__textSubDdf = None
     
     def update_list(self, message: Message):
         """
@@ -84,7 +84,10 @@ class Analysis:
         
         self.stats = pd.DataFrame(self.__tempList, 
             columns= ["Date", "Time", "Author", "Content", "Type", "Weekday"])
-
+    
+    #
+    # CHAT SUMMRY METHODS
+    #
 
     def get_messages_per_day_per_user(self):
         """
@@ -223,6 +226,7 @@ class Analysis:
             pandas.core.series.Series
                 Pandas Series containing the average length of each user
         """
+        # change to take into account only text messages
         self.stats["message_length"] = self.stats["Content"].apply(lambda x: len(x.split()))
         
         return self.stats.groupby("Author")["message_length"].mean()
@@ -264,57 +268,81 @@ class Analysis:
     def get_most_common_messages(self): # keep or change (?)
         return self.stats["Content"].value_counts()
     
+    # 
+    # TEXT REGULARIZATION AND NLP METHODS
+    #
+
+    def __createTextSubDataFrame(self):
+        if self.stats != None:
+            self.__textSubDdf = self.stats[self.stats["Type"] == "Text"]
+    
     def __tokenize_messages(self):
         """
         Hidden method to tokenize each message
         """
-        self.stats["tokenized_messages"] = self.stats["Content"].apply(
+        if self.__textSubDdf == None:
+            self.__createTextSubDataFrame()
+        
+        self.__textSubDdf["tokenized_messages"] = self.__textSubDdf["Content"].apply(
             lambda x: nltk.tokenize.word_tokenize(x)
         )
-
+    
     def get_most_common_words(self):
-        # don't need this at the moment
-        if "tokenized_messages" not in self.stats.columns:
-            self.__tokenize_messages()
-        
+        """
+        Returns a dictionary with the words that appear in the chat and their count
+
+        Returns
+        --------------------
+            words: dict
+                Dictionary with word frequency
+        """
+        if self.__textSubDdf == None:
+            self.__createTextSubDataFrame()
+
         words = Counter(
-            (" ".join(self.stats["Content"])).split()
+            (" ".join(self.__textSubDdf["Content"])).split()
             ) # save this as attribute to use later ?
         # returns dictionary (change to another type for better manupulation?)
         return words
     
     def get_most_common_words_per_user(self, user):
-        user_messages = self.stats[self.stats["Author"] == user]
+        if self.__textSubDdf == None:
+            self.__createTextSubDataFrame()
+        
+        user_messages = self.__textSubDdf[self.__textSubDdf["Author"] == user]
 
         user_words = Counter(
             (" ".join(user_messages["Content"])).split()
         )
         return user_words
 
-
     def get_count_of_word(self, word):
         """
         Returns the number of times the input word appaeared in the chat
         """
+        if self.__textSubDdf == None:
+            self.__createTextSubDataFrame()
+        
         words = Counter(
             (" ".join(self.stats["Content"])).split()
             )
         
         if word not in words.keys():
             return None
+        
         return words[word]
-    
     
     def text_regularization(self):
         """
         Method to regularize the chat messages
         """
-        # should I store as a column or as separate series?
-        # or create a separate df with just messages of text type?
-        self.stats["regular_text"] = self.stats["Content"][self.stats["Type"] == "Text"]
-        
+        #
+        # Evaluate wheter to move __createTextSubDataFrame and tokenization 
+        # methods inside of this function and the just use this for all preprocessing
+        #
         # steps to implement:
         # - remove punctuation (non alpha-numeric characters)
         # - turn all words to lowercase 
         # - remove all stopwords
+        pass
          
