@@ -34,8 +34,8 @@ class Analysis:
 
     def __init__(self):
         """Constructor"""
-        self.__tempList = []
         self.stats = None
+        self.__tempList = []
         self.__textSubDdf = None
     
     def update_list(self, message: Message):
@@ -273,19 +273,9 @@ class Analysis:
     #
 
     def __createTextSubDataFrame(self):
-        if self.stats != None:
+        if self.stats is not None:
             self.__textSubDdf = self.stats[self.stats["Type"] == "Text"]
     
-    def __tokenize_messages(self):
-        """
-        Hidden method to tokenize each message
-        """
-        if self.__textSubDdf == None:
-            self.__createTextSubDataFrame()
-        
-        self.__textSubDdf["tokenized_messages"] = self.__textSubDdf["Content"].apply(
-            lambda x: nltk.tokenize.word_tokenize(x)
-        )
     
     def get_most_common_words(self):
         """
@@ -336,6 +326,8 @@ class Analysis:
         """
         Method to regularize the chat messages
         """
+        # create the text sub-dataframe
+        self.__createTextSubDataFrame()
         #
         # Evaluate wheter to move __createTextSubDataFrame and tokenization 
         # methods inside of this function and the just use this for all preprocessing
@@ -344,5 +336,9 @@ class Analysis:
         # - remove punctuation (non alpha-numeric characters)
         # - turn all words to lowercase 
         # - remove all stopwords
-        pass
+        self.__textSubDdf["tokenized"] = self.__textSubDdf["Content"].apply(
+            lambda x: nltk.word_tokenize(x)   
+        )
+
+        # for stopwords topic modelling etc, do i have to detect what language the chat is in?
          
