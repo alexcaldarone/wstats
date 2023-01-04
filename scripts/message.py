@@ -111,7 +111,7 @@ class Message:
         '''
         if '<Media omitted>' in chatline[self.__authlen:]:
             messType = 'Media'
-        elif 'https://' in chatline[self.__authlen:]:
+        elif 'https://' in chatline[self.__authlen:]: # do with regex
             messType = 'Link'
         else:
             messType = 'Text'

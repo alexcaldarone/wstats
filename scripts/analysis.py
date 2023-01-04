@@ -2,25 +2,18 @@ from scripts.message import Message
 import nltk
 import pandas as pd
 from collections import Counter
+import emoji
 
 # nltk.download("punkt")
+# nltk.download("wordnet")
+nltk.download("omw-1.4")
 # move the installation of these libraries into setup.py?
 
 class Analysis:
     """
-
-    Existing stats i need to re-implement:
-        - ---participants
-        - ---number of messages per hour
-        - ---how many chats were started by each user
-        - ---average length of messages
-        - ---number of messages per day
-        - ---number of messages by each message type
-        - ---number of messages for each weekday
-
     Extra features to add:
-        - frequency of most used words by each user (nltk.freqDist)
-        - possibility to choose a word and see how many times it has been used (globally and for each user)
+        --- frequency of most used words by each user (nltk.freqDist)
+        --- possibility to choose a word and see how many times it has been used (globally and for each user)
         - chat and user wordcloud
         - sentiment analysis
 
@@ -241,7 +234,7 @@ class Analysis:
             pandas.core.series.Series
                 Pandas Series containing the number of conversations started by each user
         """
-        
+        # do with dictionary ?
         res = []
         unique_date = self.stats["Date"].unique()
 
@@ -296,6 +289,21 @@ class Analysis:
         return words
     
     def get_most_common_words_per_user(self, user):
+        """
+        Returns the most common words used by each user
+        
+        Parameters
+        --------------------
+            user: str
+                Chat participant
+        Returns
+        --------------------
+            user_words: dict
+                Dictionary with most common words that appear in the user's messages
+        """
+        if user not in self.get_chat_participants():
+            raise Exception(f"{user} not in the chat participants!")
+        
         if self.__textSubDdf == None:
             self.__createTextSubDataFrame()
         
@@ -309,6 +317,15 @@ class Analysis:
     def get_count_of_word(self, word):
         """
         Returns the number of times the input word appaeared in the chat
+        
+        Parameters
+        --------------------
+            word: str
+                The word whose frequency we want to track
+        Returns
+        --------------------
+            words: int
+                Word's frequency in the chat
         """
         if self.__textSubDdf == None:
             self.__createTextSubDataFrame()
@@ -321,6 +338,38 @@ class Analysis:
             return None
         
         return words[word]
+    
+    def get_count_of_word_per_conversation(self, word):
+        """
+        Returns the number of times a word appears in each conversation.
+
+        Parameters
+        --------------------
+            word: str
+                The word whose frequency we want to track over time
+        Returns
+        --------------------
+            pd.Series
+                Pandas Series with word count for each conversation 
+        """
+        if self.__textSubDdf is None:
+            self.__createTextSubDataFrame()
+        
+        dates = pd.unique(self.__textSubDdf["Date"])
+        word_appearances = [0] * len(dates)
+
+        for i, date in enumerate(dates):
+            conversation = self.__textSubDdf[self.__textSubDdf["Date"] == date]
+            
+            word_count = Counter(
+            (" ".join(conversation["Content"])).split()
+            )
+
+            if word in word_count.keys():
+                word_appearances[i] = word_count[word]
+
+        return pd.Series(data=word_appearances, index=dates)
+
     
     def text_regularization(self):
         """
@@ -336,9 +385,15 @@ class Analysis:
         # - remove punctuation (non alpha-numeric characters)
         # - turn all words to lowercase 
         # - remove all stopwords
+        #
+        self.__textSubDdf["Content"] = self.__textSubDdf["Content"].apply(
+            lambda x: emoji.demojize(x)
+        )
+
         self.__textSubDdf["tokenized"] = self.__textSubDdf["Content"].apply(
             lambda x: nltk.word_tokenize(x)   
         )
 
-        # for stopwords topic modelling etc, do i have to detect what language the chat is in?
+        return self.__textSubDdf
+        # for stopwords, topic modelling etc, do i have to detect what language the chat is in?
          

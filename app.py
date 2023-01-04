@@ -48,121 +48,118 @@ else:
                 analysis.update_last_message(line)
     
     analysis.generate_dataframe()
-
-    # st.write(analysis.get_messages_by_weekday())
-    st.write(analysis.stats)
-    # st.write(analysis.get_messages_by_type())
-    # st.write(analysis.get_messages_per_day_per_user())
-    # st.write(analysis.get_messages_per_day())
-    # st.write(analysis.get_chat_participants())
-    # st.write(analysis.get_messages_by_hour())
-    # st.write(analysis.average_message_length_by_user())
-    # st.write(analysis.stats)
-    # st.write(analysis.chats_started_by_user())
-    # st.write(analysis.get_most_common_words())
-    # st.write(analysis.stats)
-    # st.write(analysis.get_most_common_words_per_user("User2"))
-    # st.write(analysis.get_count_of_word("with"))
-    st.write(analysis.text_regularization())
-    #st.write(analysis.stats)
-
-    """
+    
     # Charts
-    fig1, ax1 = plt.subplots()
-    ax1.pie(list(analysis["Number"].values()), labels=list(analysis["Number"].keys()), autopct='%1.2f%%')
-    ax1.axis('equal')
 
+    # Number of messages sent by each user
+    messages_by_user = analysis.get_messages_per_user()
+    fig1, ax1 = plt.subplots()
+    ax1.pie(messages_by_user, labels=messages_by_user.index, autopct='%1.2f%%')
+    ax1.axis('equal')
+    
+    # Number of messages per conversation
+    number_of_messager_per_conversation = analysis.get_messages_per_day()
     fig2, ax2 = plt.subplots()
-    ax2.bar(list(analysis["Days"].keys()), list(analysis["Days"].values()))
-    ax2.set(xticklabels=[])
+    ax2.plot(number_of_messager_per_conversation.index, number_of_messager_per_conversation)
+    #ax2.set(xticklabels=[])
     ax2.set_ylabel('N° of messages')
 
+    # number of messages per weekday
+    number_of_messager_per_weekday = analysis.get_messages_by_weekday()
     fig3, ax3 = plt.subplots()
-    ax3.barh(list(analysis["Weekday"].keys()), list(analysis["Weekday"].values()))
+    ax3.barh(number_of_messager_per_weekday.index[::-1], number_of_messager_per_weekday[::-1])
     ax3.set_title('Weekly chatting patterns')
 
+    # number of messages per hour
+    number_of_messages_per_hour = analysis.get_messages_by_hour()
     fig4, ax4 = plt.subplots()
-    ax4.bar(sorted(analysis["Time"].keys()), analysis["Time"].values()) # ricontrolla
+    ax4.bar(number_of_messages_per_hour.index, number_of_messages_per_hour) 
     ax4.set_title('Houly chatting patterns')
     ax2.set_ylabel('N° of messages')
 
+    # Number of messages for each message type (text, media, link)
+    number_of_messages_per_type = analysis.get_messages_by_type()
     fig5, ax5 = plt.subplots()
-    ax5.pie(list(analysis["Type"].values()), labels=list(analysis["Type"].keys()), autopct='%1.2f%%')
+    ax5.pie(number_of_messages_per_type, labels=number_of_messages_per_type.index, autopct='%1.2f%%')
     ax5.axis('equal')
 
+    # Number of conversations started by each user
+    conversation_started_by_users = analysis.chats_started_by_user()
     fig6, ax6 = plt.subplots()
-    ax6.pie(list(analysis["Started"].values()), labels=list(analysis["Started"].keys()), autopct='%1.2f%%')
+    ax6.pie(conversation_started_by_users, labels=conversation_started_by_users.index, autopct='%1.2f%%')
     ax6.axis('equal')
 
+    # Average message length for each message
+    average_message_length = analysis.average_message_length_by_user()
     fig7, ax7 = plt.subplots()
-    ax7.barh(list(analysis["AveLength"].keys()), list(analysis["AveLength"].values()), align='center')
-    ax7.set_yticks(list(analysis["AveLength"].keys()))
+    ax7.barh(average_message_length.index, average_message_length, align='center')
+    ax7.set_yticks(average_message_length.index)
     ax7.invert_yaxis()  # labels read top-to-bottom
     ax7.set_xlabel('Average message length')
     ax7.set_title('Average participant message length')
     st.success('Done')
 
+    # Display charts
+
     st.header("Number of messages")
     col1, col2 = st.columns(2)
     with col1:
-        st.metric('Total messages (includes update messages)', sum(analysis["Number"].values()))
-        for i in analysis["Number"]:
+        st.metric('Total messages (includes update messages)', sum(messages_by_user))
+        for i in messages_by_user.index:
             if i != None and i != 'None':
-                st.write(i+':', analysis["Number"][i])
+                st.write(i+':', messages_by_user[i])
     with col2:
         st.pyplot(fig1)
     
+
     st.header("Messages sent per conversation")
     st.pyplot(fig2)
+
     
     st.header("Messages sent each weekday")
     col3, col4 = st.columns([1, 2])
     with col3:
-        for i in analysis["Weekday"]:
-            st.write(i+':', analysis["Weekday"][i])
+        for i in number_of_messager_per_weekday.index:
+            st.write(i+':', number_of_messager_per_weekday[i])
     with col4:
         st.pyplot(fig3)
     
+    
     st.header('Hourly chatting patterns')
     st.pyplot(fig4)
+
 
     st.header("Type of message")
     col5, col6 = st.columns(2)
     with col5:
         st.write('Media includes photos, documents, audios.')
-        for i in analysis["Type"]:
-            st.write(i+':', analysis["Type"][i])
+        for i in number_of_messages_per_type.index:
+            st.write(i+':', number_of_messages_per_type[i])
     with col6:
         st.pyplot(fig5)
+    
     
     st.header("Who were the conversations started by?")
     col7, col8= st.columns(2)
     with col7:
-        st.metric('Total number of \nconversations', sum(analysis["Started"].values()))
-        for i in analysis["Started"]:
+        st.metric('Total number of \nconversations', sum(conversation_started_by_users))
+        for i in conversation_started_by_users.index:
             if i != None:
-                st.write(i, 'started', analysis["Started"][i], 'conversations.')
+                st.write(i, 'started', conversation_started_by_users[i], 'conversations.')
     with col8:
         st.pyplot(fig6)
+    
     
     st.header('Average message length')
     col9, col10 = st.columns(2)
     with col9:
-        for i in analysis["AveLength"]:
+        for i in average_message_length.index:
             if i != None:
-                st.write(i+"'s average message length is:", round(analysis["AveLength"][i], 2))
+                st.write(i+"'s average message length is:", round(average_message_length[i], 2))
     with col10:
         st.pyplot(fig7)
     
-    st.markdown("---")
-
-    st.download_button(
-        label="Download chat data as JSON",
-        data=json.dumps(analysis.STATS, cls=SetEncoder),
-        file_name="chat_stats.json",
-        mime="text"
-    )
 
     st.markdown("---")
     st.markdown('''
-    Created by [Alex Caldarone](https://alexcaldarone.github.io/)''')"""
+    Created by [Alex Caldarone](https://alexcaldarone.github.io/)''')
