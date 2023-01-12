@@ -3,10 +3,11 @@ import nltk
 import pandas as pd
 from collections import Counter
 import emoji
+import streamlit as st
 
 # nltk.download("punkt")
 # nltk.download("wordnet")
-nltk.download("omw-1.4")
+# nltk.download("omw-1.4")
 # move the installation of these libraries into setup.py?
 
 class Analysis:
@@ -65,7 +66,7 @@ class Analysis:
         CONTENT_INDEX = 3 
         self.__tempList[-1][CONTENT_INDEX] += line
 
-
+   
     def generate_dataframe(self):
         """
         Generates the dataframe containing the chat's data.
@@ -82,6 +83,7 @@ class Analysis:
     # CHAT SUMMRY METHODS
     #
 
+    
     def get_messages_per_day_per_user(self):
         """
         Counts the number of messages sent each day by each user
@@ -93,7 +95,7 @@ class Analysis:
         """
         return self.stats.groupby(["Date", "Author"])["Content"].count()
 
-
+    
     def get_messages_per_user(self):
         """
         Counts the total number of messages sent by each user
@@ -105,7 +107,7 @@ class Analysis:
         """
         return self.stats.groupby("Author")["Content"].count()
 
-
+    
     def get_messages_per_day(self):
         """
         Counts the number of messages sent each day (by all users)
@@ -117,7 +119,7 @@ class Analysis:
         """
         return self.stats.groupby("Date")["Content"].count()
 
-
+    
     def get_messages_by_type(self):
         """
         Counts the number of messages for each message type (text, media, link)
@@ -143,7 +145,7 @@ class Analysis:
 
         return pd.Series(data=res, index=types_available)
 
-
+    
     def get_messages_by_weekday(self):
         """
         Counts the number of messages sent on each weekday
@@ -170,7 +172,7 @@ class Analysis:
 
         return pd.Series(data=res, index=weekdays, name="messages_per_weekday") 
 
-
+    
     def get_messages_by_hour(self):
         """
         Counts the number of messages sent each hour
@@ -196,7 +198,7 @@ class Analysis:
         
         return pd.Series(data=res, index=range(0, 24))
 
-
+    
     def get_messages_by_hour_by_user(self):
         """
         Counts the number of messages sent each hour by each user
@@ -209,7 +211,7 @@ class Analysis:
         # should I add the hours that were not present in the chat with count = 0?
         return self.stats.groupby(["hour", "Author"]).count()
 
-
+    
     def average_message_length_by_user(self):
         """
         Counts the average length of each user's messagges
@@ -224,7 +226,7 @@ class Analysis:
         
         return self.stats.groupby("Author")["message_length"].mean()
 
-
+    
     def chats_started_by_user(self): # how to do better ?
         """
         Counts the number of conversations started by each user
@@ -246,7 +248,7 @@ class Analysis:
 
         return chat_starters.groupby("Author")["Date"].count()
 
-
+    
     def get_chat_participants(self):
         """
         Returns the participants in the chat
@@ -264,10 +266,11 @@ class Analysis:
     # 
     # TEXT REGULARIZATION AND NLP METHODS
     #
-
+    
     def __createTextSubDataFrame(self):
         if self.stats is not None:
             self.__textSubDdf = self.stats[self.stats["Type"] == "Text"]
+        return True
     
     
     def get_most_common_words(self):
@@ -285,8 +288,9 @@ class Analysis:
         words = Counter(
             (" ".join(self.__textSubDdf["Content"])).split()
             ) # save this as attribute to use later ?
-        # returns dictionary (change to another type for better manupulation?)
+        
         return words
+    
     
     def get_most_common_words_per_user(self, user):
         """
@@ -304,16 +308,18 @@ class Analysis:
         if user not in self.get_chat_participants():
             raise Exception(f"{user} not in the chat participants!")
         
-        if self.__textSubDdf == None:
+        if self.__textSubDdf is None:
             self.__createTextSubDataFrame()
         
         user_messages = self.__textSubDdf[self.__textSubDdf["Author"] == user]
 
-        user_words = Counter(
-            (" ".join(user_messages["Content"])).split()
-        )
-        return user_words
+        words_string = Counter(" ".join(user_messages["Content"]).split())
+        top_frequencies = sorted(list(words_string.values()))[-5::] # get the frequencies of the 5 most used words
+        most_common_words = [word for word in words_string.keys() if words_string[word] in top_frequencies]
 
+        return most_common_words
+    
+    
     def get_count_of_word(self, word):
         """
         Returns the number of times the input word appaeared in the chat
@@ -339,6 +345,7 @@ class Analysis:
         
         return words[word]
     
+    
     def get_count_of_word_per_conversation(self, word):
         """
         Returns the number of times a word appears in each conversation.
@@ -352,22 +359,25 @@ class Analysis:
             pd.Series
                 Pandas Series with word count for each conversation 
         """
+        print(self.__textSubDdf)
+        # do it with regularized text
         if self.__textSubDdf is None:
             self.__createTextSubDataFrame()
         
         dates = pd.unique(self.__textSubDdf["Date"])
+        # merged_token_list = [] # list to 
         word_appearances = [0] * len(dates)
 
         for i, date in enumerate(dates):
             conversation = self.__textSubDdf[self.__textSubDdf["Date"] == date]
-            
+
             word_count = Counter(
-            (" ".join(conversation["Content"])).split()
+            (" ".join(conversation["Content"])).lower().split()
             )
 
             if word in word_count.keys():
                 word_appearances[i] = word_count[word]
-
+        print(word_appearances)
         return pd.Series(data=word_appearances, index=dates)
 
     
@@ -388,6 +398,10 @@ class Analysis:
         #
         self.__textSubDdf["Content"] = self.__textSubDdf["Content"].apply(
             lambda x: emoji.demojize(x)
+        )
+
+        self.__textSubDdf["Content"] = self.__textSubDdf["Content"].apply(
+            lambda x: x.lower()
         )
 
         self.__textSubDdf["tokenized"] = self.__textSubDdf["Content"].apply(

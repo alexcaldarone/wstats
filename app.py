@@ -48,7 +48,7 @@ else:
                 analysis.update_last_message(line)
     
     analysis.generate_dataframe()
-    
+    analysis.text_regularization()
     # Charts
 
     # Number of messages sent by each user
@@ -113,7 +113,7 @@ else:
     
 
     st.header("Messages sent per conversation")
-    st.pyplot(fig2)
+    st.bar_chart(data = number_of_messager_per_conversation)
 
     
     st.header("Messages sent each weekday")
@@ -159,6 +159,32 @@ else:
     with col10:
         st.pyplot(fig7)
     
+    st.header("How often was a certain word used?")
+    input_word = st.text_input("Search for word")
+    if input_word != None:
+        word_frequency = analysis.get_count_of_word_per_conversation(input_word.lower())
+        fig8, ax8 = plt.subplots()
+        ax8.scatter(word_frequency.index, word_frequency)
+        ax8.set_ylim(bottom=0)
+        st.pyplot(fig8)
+    
+    # add distribution of words per user (?)
+
+    # add count of a single word
+
+    # add most common words for a certain user
+    st.header("What is a user's most common word?")
+    st.write("Returns the selected user's 5 most common words.")
+    col11, col12 = st.columns(2)
+    with col11:
+        selected_user = st.radio(
+            label="Select a user",
+            options=analysis.get_chat_participants()
+        )
+    most_common_words_per_user = analysis.get_most_common_words_per_user(selected_user)
+    with col12:
+        for word in most_common_words_per_user:
+            st.write(word)
 
     st.markdown("---")
     st.markdown('''
