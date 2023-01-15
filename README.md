@@ -9,3 +9,10 @@ With this simple app you will be able to analyze:
 - :file_folder: How many of your messages are media 
 - :speech_balloon: Who is the conversation starter?
 - :memo: Who writes the longest messages on average?
+
+
+# TO DO:
+1. Finish adding new methods to app.py file
+2. Evaluate how to extend text_regularization method
+3. (?) Implement naive bayes classifier to allow users to input a string and return who the most likylu author of that message is
+4. Rewrite test to accomodate the refactor from json to pandas dataframe in analysis class
