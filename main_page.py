@@ -48,7 +48,9 @@ else:
                 analysis.update_last_message(line)
     
     analysis.generate_dataframe()
-    analysis.text_regularization()
+    t = analysis.text_regularization()
+    
+    st.write(t)
     # Charts
 
     # Number of messages sent by each user
@@ -98,6 +100,7 @@ else:
     ax7.set_xlabel('Average message length')
     ax7.set_title('Average participant message length')
     st.success('Done')
+    
 
     # Display charts
 

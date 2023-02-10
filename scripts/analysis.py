@@ -8,7 +8,14 @@ import streamlit as st
 # nltk.download("punkt")
 # nltk.download("wordnet")
 # nltk.download("omw-1.4")
-# move the installation of these libraries into setup.py?
+nltk.download('averaged_perceptron_tagger')
+nltk.download('universal_tagset')
+nltk.download("omw")
+
+from nltk.corpus import wordnet as wn
+print(wn.langs())
+
+#move the installation of these libraries into setup.py?
 
 class Analysis:
     """
@@ -312,6 +319,8 @@ class Analysis:
             self.__createTextSubDataFrame()
         
         user_messages = self.__textSubDdf[self.__textSubDdf["Author"] == user]
+        
+        # how to do with tagged words?
 
         words_string = Counter(" ".join(user_messages["Content"]).split())
         top_frequencies = sorted(list(words_string.values()))[-5::] # get the frequencies of the 5 most used words
@@ -410,4 +419,6 @@ class Analysis:
 
         return self.__textSubDdf
         # for stopwords, topic modelling etc, do i have to detect what language the chat is in?
-         
+        
+
+        # method to vecotrize messages and then use cosine similarity to see how similar the users messages are?
