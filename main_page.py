@@ -8,6 +8,7 @@ from scripts.json_set_encoder import SetEncoder
 import time
 
 st.set_page_config(page_title="WhatsApp Stats")
+st.sidebar.markdown("# Chat Explorer")
 st.title("WhatsApp Stats")
 st.markdown(''' #### _Discover the **secrets** behind your chats!_
 

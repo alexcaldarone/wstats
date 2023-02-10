@@ -1,5 +1,6 @@
 from scripts.message import Message
 import nltk
+from nltk.corpus import stopwords
 import pandas as pd
 from collections import Counter
 import emoji
@@ -8,13 +9,14 @@ import streamlit as st
 # nltk.download("punkt")
 # nltk.download("wordnet")
 # nltk.download("omw-1.4")
-nltk.download('averaged_perceptron_tagger')
-nltk.download('universal_tagset')
-nltk.download("omw")
-
-from nltk.corpus import wordnet as wn
-print(wn.langs())
-
+# nltk.download('averaged_perceptron_tagger')
+# nltk.download('universal_tagset')
+# nltk.download("omw")
+nltk.download("stopwords")
+english_stop_words = stopwords.words("english")
+italian_stop_words = stopwords.words("italian")
+stop_words = set(english_stop_words + italian_stop_words)
+print(stop_words)
 #move the installation of these libraries into setup.py?
 
 class Analysis:
@@ -322,7 +324,7 @@ class Analysis:
         
         # how to do with tagged words?
 
-        words_string = Counter(" ".join(user_messages["Content"]).split())
+        words_string = Counter(" ".join(user_messages["Content"]).split()) # do it on tokenized words
         top_frequencies = sorted(list(words_string.values()))[-5::] # get the frequencies of the 5 most used words
         most_common_words = [word for word in words_string.keys() if words_string[word] in top_frequencies]
 
@@ -368,7 +370,6 @@ class Analysis:
             pd.Series
                 Pandas Series with word count for each conversation 
         """
-        print(self.__textSubDdf)
         # do it with regularized text
         if self.__textSubDdf is None:
             self.__createTextSubDataFrame()
@@ -386,7 +387,7 @@ class Analysis:
 
             if word in word_count.keys():
                 word_appearances[i] = word_count[word]
-        print(word_appearances)
+        
         return pd.Series(data=word_appearances, index=dates)
 
     
@@ -415,6 +416,10 @@ class Analysis:
 
         self.__textSubDdf["tokenized"] = self.__textSubDdf["Content"].apply(
             lambda x: nltk.word_tokenize(x)   
+        )
+
+        self.__textSubDdf["tokenized"] = self.__textSubDdf["tokenized"].apply(
+            lambda x: [word for word in x if not word in stop_words]
         )
 
         return self.__textSubDdf
