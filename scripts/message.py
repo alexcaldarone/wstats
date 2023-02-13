@@ -1,5 +1,6 @@
 import datetime
 import dateutil.parser as datepars
+import re
 
 class Message:
     '''
@@ -20,6 +21,11 @@ class Message:
         self.weekday: str
             Contains the weekday on which the day was sent
     '''
+
+    # utility attibute used to determine wheter a message is a link or not
+    __link_finder = re.compile("http(s://|://)")
+
+    
     def __init__(self, chatline):
         '''constructor'''
         self.date = datepars.parse(chatline.split(',')[0]) # this object is created only if the message is valid (tested before the message is created)
@@ -109,10 +115,11 @@ class Message:
             messType: str
                 Type of the message
         '''
-        if '<Media omitted>' in chatline[self.__authlen:]:
+        m = self.__link_finder.search(chatline[self.__authlen:])
+        if m:
+            messType = "Link"
+        elif '<Media omitted>' in chatline[self.__authlen:]:
             messType = 'Media'
-        elif 'https://' in chatline[self.__authlen:]: # do with regex
-            messType = 'Link'
         else:
             messType = 'Text'
         return messType
