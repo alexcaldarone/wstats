@@ -121,5 +121,3 @@ if __name__ == '__main__':
     est, vectorizer = n.training_pipeline(c)
     # print(n.raw_data)
     # print(type(n.raw_data["tokenized"][0]))
-    auth, prob = n.classify_text("mamma ha detto di venirmi a prendere", est, vectorizer, labels=["Alex", "Kevin"])
-    print(f"most likely author is {auth} \nwith probability {prob}")
