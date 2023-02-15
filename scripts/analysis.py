@@ -422,7 +422,7 @@ class Analysis:
 
         # removing punctuation
         self.__textSubDdf["tokenized"] = self.__textSubDdf["tokenized"].apply(
-            lambda x: [word for word in x if word not in "!£$%&/()=?'^[]}{+*#°@-_.:,;\|<>pytho"]
+            lambda x: [word for word in x if word not in "!£$%&/()=?'^[]}{+*#°@-_.:,;\|<>"]
         )
 
         return self.__textSubDdf
