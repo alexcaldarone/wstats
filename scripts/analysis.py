@@ -6,18 +6,10 @@ from collections import Counter
 import emoji
 import streamlit as st
 
-# nltk.download("punkt")
-# nltk.download("wordnet")
-# nltk.download("omw-1.4")
-# nltk.download('averaged_perceptron_tagger')
-# nltk.download('universal_tagset')
-# nltk.download("omw")
-nltk.download("stopwords")
+# grabbing stpowords from nltk
 english_stop_words = stopwords.words("english")
 italian_stop_words = stopwords.words("italian")
 stop_words = set(english_stop_words + italian_stop_words)
-print(stop_words)
-#move the installation of these libraries into setup.py?
 
 class Analysis:
     """
@@ -431,5 +423,5 @@ class Analysis:
         """
         Export the tokenized messages and the author columns as a parquet file.
         """
-        to_export = self.__textSubDdf["Author", "tokenized"]
-        return to_export.to_parquet("classifier_raw_data.parquet", engine="pyarrow")
+        to_export = self.__textSubDdf[["Author", "tokenized"]]
+        return to_export.to_parquet("scripts/classifier_raw_data.parquet", engine="pyarrow")

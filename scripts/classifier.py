@@ -18,7 +18,8 @@ class NaiveBayesClassifier():
         """
         Reads a parquet file and initializes the raw_data attribute where the data is stored as a pandas dataframe
         """
-        self.raw_data = pd.read_parquet("../classifier_raw_data.parquet",
+        # add a check to see if the file was found and raise error otherwise
+        self.raw_data = pd.read_parquet("classifier_raw_data.parquet",
                                         engine="pyarrow")
     
     def create_corpus(self):
@@ -45,11 +46,10 @@ class NaiveBayesClassifier():
 
         Returns
         --------------------
+            MultinomialNB
+                The best estimator found during the training process
             CountVectorizer
                 Vectorizer used in the training process to vectorize the corpus
-            
-            ...
-                The best estimator found during the training process
         """
         Y = self.raw_data.pop("Author") # change to use imput corpus instead of attributes?
         
@@ -105,7 +105,7 @@ class NaiveBayesClassifier():
         probs = classifier.predict_proba(vects).flatten()
         max_prob_idx = np.argmax(probs)
 
-        if labels: # if labels are given return the most likely label
+        if labels is not None: # if labels are given return the most likely label
             max_prob_class = labels[max_prob_idx]
         else: # otherwise return the most likely index
             max_prob_class = max_prob_idx
