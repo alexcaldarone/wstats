@@ -1,4 +1,4 @@
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://alexcaldarone-wstats-app-6tzmao.streamlit.app/)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://chatstats.streamlit.app/)
 # WhatsApp Stats
 
 With this simple app you will be able to analyze:
@@ -12,7 +12,4 @@ With this simple app you will be able to analyze:
 
 
 # TO DO:
-1. Finish adding new methods to app.py file
-2. Evaluate how to extend text_regularization method
-3. (?) Implement naive bayes classifier to allow users to input a string and return who the most likylu author of that message is
 4. Rewrite test to accomodate the refactor from json to pandas dataframe in analysis class

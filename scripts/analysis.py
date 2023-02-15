@@ -77,8 +77,11 @@ class Analysis:
         if len(self.__tempList) == 0:
             raise Exception("Cannot create DataFrame without chat data")
         
-        self.stats = pd.DataFrame(self.__tempList, 
+        df = pd.DataFrame(self.__tempList, 
             columns= ["Date", "Time", "Author", "Content", "Type", "Weekday"])
+        
+        # dropping rows where there is no messagecd 
+        self.stats = df.loc[(df["Content"] != "") & (df["Content"] != " ")]
     
     #
     # CHAT SUMMRY METHODS
@@ -317,12 +320,12 @@ class Analysis:
         st = "" 
         for idx, row in user_messages.iterrows(): # can i do it with lists instead of strings
             st += " " + " ".join(user_messages["tokenized"][idx])
-
-        words_string = Counter(st.split()) 
+        
+        words_string = Counter(st.split())
         top_frequencies = sorted(list(words_string.values()))[-5::] # get the frequencies of the 5 most used words
         most_common_words = [word for word in words_string.keys() if words_string[word] in top_frequencies]
 
-        return most_common_words
+        return most_common_words[:5] # return only top 5 words
     
     
     def get_count_of_word(self, word):
@@ -419,9 +422,9 @@ class Analysis:
 
         return self.__textSubDdf
     
+    @st.cache
     def export_to_classifier(self):
         """
         Export the tokenized messages and the author columns as a parquet file.
         """
-        to_export = self.__textSubDdf[["Author", "tokenized"]]
-        return to_export.to_parquet("scripts/classifier_raw_data.parquet", engine="pyarrow")
+        return self.__textSubDdf[["Author", "tokenized"]]

@@ -1,7 +1,7 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import json
-from io import StringIO
+from io import StringIO, BytesIO
 from scripts.message import Message
 from scripts.analysis import Analysis
 from scripts.json_set_encoder import SetEncoder
@@ -50,9 +50,9 @@ else:
                 analysis.update_last_message(line)
     
     analysis.generate_dataframe()
-    t = analysis.text_regularization()
+    analysis.text_regularization()
+    classifier_df = analysis.export_to_classifier()
     
-    st.write(t)
     # Charts
 
     # Number of messages sent by each user
@@ -169,7 +169,7 @@ else:
     if input_word != None:
         word_frequency = analysis.get_count_of_word_per_conversation(input_word.lower())
         fig8, ax8 = plt.subplots()
-        ax8.scatter(word_frequency.index, word_frequency)
+        ax8.bar(word_frequency.index, word_frequency)
         ax8.set_ylim(bottom=0)
         st.pyplot(fig8)
     
@@ -189,10 +189,27 @@ else:
     most_common_words_per_user = analysis.get_most_common_words_per_user(selected_user)
     with col12: # better way to do it?
         for word in most_common_words_per_user:
-            if emoji.is_emoji(emoji.emojize(":"+word+":")): # if it is an emoji represent it as one
-                st.write(emoji.emojize(":"+word+":"))
-            else:
-                st.write(word) # otherwise just write as text
+            if word[0] == ":" and word[-1] == ":" and emoji.is_emoji(emoji.emojize(f"{word}")): emoji_string = word
+            elif word.startswith(":") and emoji.is_emoji(emoji.emojize(f"{word}:")): emoji_string = word+":"
+            elif word.endswith(":") and emoji.is_emoji(emoji.emojize(f":{word}")): emoji_string = ":"+word
+            elif emoji.is_emoji(emoji.emojize(f":{word}:")): emoji_string = ":"+word+":"
+            else: emoji_string = None
+
+            if emoji_string: st.write(emoji.emojize(emoji_string))
+            else: st.write(word)
+    
+
+    st.markdown("---")
+    st.header("Export chat data to classifier")
+    st.markdown("""
+    This section allows you to dowload the necessary data to train the Multinomial Naive Bayes Classifier.
+    Press the download button, save the parquet file, switch over to page2 and import!
+    """)
+    parquet_file = classifier_df.to_parquet(engine="pyarrow")
+    st.download_button(label="Download data for classifier",
+                       data=parquet_file,
+                       file_name="classifier_data.parquet",
+                       mime="application/octet-stream")
 
     st.markdown("---")
     st.markdown('''

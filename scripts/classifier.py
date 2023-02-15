@@ -14,13 +14,12 @@ class NaiveBayesClassifier():
     Class used to define the training pipeline used for the model and to make predictions.
     """
 
-    def get_raw_data(self):
+    def get_raw_data(self, file):
         """
         Reads a parquet file and initializes the raw_data attribute where the data is stored as a pandas dataframe
         """
-        # add a check to see if the file was found and raise error otherwise
-        self.raw_data = pd.read_parquet("classifier_raw_data.parquet",
-                                        engine="pyarrow")
+        self.raw_data = pd.read_parquet(file,
+                                            engine="pyarrow")
     
     def create_corpus(self):
         """
@@ -56,15 +55,15 @@ class NaiveBayesClassifier():
         train_data, test_data, train_label, test_label = train_test_split(self.raw_data["tokenized"],
                                                                           Y,
                                                                           train_size=0.8,
-                                                                          random_state=2)
+                                                                          random_state=1)
         
         vectorizer = CountVectorizer(ngram_range=(1,3)) 
         train_vects = vectorizer.fit_transform(train_data)
         test_vects = vectorizer.transform(test_data)
 
         params = {'alpha': [0.01, 0.1, 0.5, 1.0, 10.0,],}
-        multinomial_grid_search = model_selection.GridSearchCV(MultinomialNB(), 
-                                                               param_grid=params, 
+        multinomial_grid_search = model_selection.GridSearchCV(MultinomialNB(),
+                                                               param_grid=params,
                                                                scoring="f1_macro", 
                                                                n_jobs=-1, # use all processors 
                                                                cv=5,
@@ -77,6 +76,14 @@ class NaiveBayesClassifier():
         print('Validation F1 score with grid searchc: {}'.format(metrics.f1_score(test_preds, test_label, average='macro'))) # print out the f1 score
 
         # cv_score = cross_validate(best_nb_classifier, test_vects, test_label, cv=5)
+
+        fig, ax = plt.subplots(figsize=(15,8))
+        disp = ConfusionMatrixDisplay.from_estimator(best_nb_classifier,
+                                                     test_vects,
+                                                     test_label,
+                                                     normalize="true",
+                                                     ax=ax)
+        plt.show()
 
         return best_nb_classifier, vectorizer
 
@@ -115,9 +122,9 @@ class NaiveBayesClassifier():
 
 if __name__ == '__main__':
     n = NaiveBayesClassifier()
-    n.get_raw_data()
+    n.get_raw_data("C:/Users/alexc/Documents/classifier_data_14el.parquet")
     c = n.create_corpus()
     #print(c)
-    est, vectorizer = n.training_pipeline(c)
+    est, vectorizer = n.training_pipeline()
     # print(n.raw_data)
     # print(type(n.raw_data["tokenized"][0]))
