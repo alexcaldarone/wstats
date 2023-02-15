@@ -322,9 +322,11 @@ class Analysis:
         
         user_messages = self.__textSubDdf[self.__textSubDdf["Author"] == user]
         
-        # how to do with tagged words?
+        st = "" 
+        for idx, row in user_messages.iterrows(): # can i do it with lists instead of strings
+            st += " " + " ".join(user_messages["tokenized"][idx])
 
-        words_string = Counter(" ".join(user_messages["Content"]).split()) # do it on tokenized words
+        words_string = Counter(st.split()) 
         top_frequencies = sorted(list(words_string.values()))[-5::] # get the frequencies of the 5 most used words
         most_common_words = [word for word in words_string.keys() if words_string[word] in top_frequencies]
 
@@ -348,13 +350,13 @@ class Analysis:
             self.__createTextSubDataFrame()
         
         words = Counter(
-            (" ".join(self.stats["Content"])).split()
-            )
+            (" ".join(self.stats["Content"])).lower().split()
+            ) # getting the number of times a certain word has been used in the chat
         
-        if word not in words.keys():
+        if word.lower() not in words.keys(): # if the word has not been used return none
             return None
         
-        return words[word]
+        return words[word.lower()] # otherwise return the number of times it appeared
     
     
     def get_count_of_word_per_conversation(self, word):
@@ -374,19 +376,19 @@ class Analysis:
         if self.__textSubDdf is None:
             self.__createTextSubDataFrame()
         
-        dates = pd.unique(self.__textSubDdf["Date"])
+        dates = pd.unique(self.__textSubDdf["Date"]) # getting the unique dates
         # merged_token_list = [] # list to 
-        word_appearances = [0] * len(dates)
+        word_appearances = [0] * len(dates) # empty list to store the number of times a word apperared
 
-        for i, date in enumerate(dates):
-            conversation = self.__textSubDdf[self.__textSubDdf["Date"] == date]
+        for i, date in enumerate(dates): # iterating over the dates
+            conversation = self.__textSubDdf[self.__textSubDdf["Date"] == date] # getting the messages from a particular day
 
             word_count = Counter(
             (" ".join(conversation["Content"])).lower().split()
-            )
+            ) # turning the content to a list and creating a counter
 
-            if word in word_count.keys():
-                word_appearances[i] = word_count[word]
+            if word in word_count.keys(): # if the word we are looking for has been used
+                word_appearances[i] = word_count[word] # we update the list with the number of times it appeared
         
         return pd.Series(data=word_appearances, index=dates)
 
@@ -397,33 +399,37 @@ class Analysis:
         """
         # create the text sub-dataframe
         self.__createTextSubDataFrame()
-        #
-        # Evaluate wheter to move __createTextSubDataFrame and tokenization 
-        # methods inside of this function and the just use this for all preprocessing
-        #
-        # steps to implement:
-        # - remove punctuation (non alpha-numeric characters)
-        # - turn all words to lowercase 
-        # - remove all stopwords
-        #
+
+        # converting emoji to text
         self.__textSubDdf["Content"] = self.__textSubDdf["Content"].apply(
             lambda x: emoji.demojize(x)
         )
 
+        # turning all words to lowercase
         self.__textSubDdf["Content"] = self.__textSubDdf["Content"].apply(
             lambda x: x.lower()
         )
 
+        # tokenizing the messages using nltk
         self.__textSubDdf["tokenized"] = self.__textSubDdf["Content"].apply(
             lambda x: nltk.word_tokenize(x)   
         )
 
+        # removing the stopwords
         self.__textSubDdf["tokenized"] = self.__textSubDdf["tokenized"].apply(
             lambda x: [word for word in x if not word in stop_words]
         )
 
-        return self.__textSubDdf
-        # for stopwords, topic modelling etc, do i have to detect what language the chat is in?
-        
+        # removing punctuation
+        self.__textSubDdf["tokenized"] = self.__textSubDdf["tokenized"].apply(
+            lambda x: [word for word in x if word not in "!£$%&/()=?'^[]}{+*#°@-_.:,;\|<>pytho"]
+        )
 
-        # method to vecotrize messages and then use cosine similarity to see how similar the users messages are?
+        return self.__textSubDdf
+    
+    def export_to_classifier(self):
+        """
+        Export the tokenized messages and the author columns as a parquet file.
+        """
+        to_export = self.__textSubDdf["Author", "tokenized"]
+        return to_export.to_parquet("classifier_raw_data.parquet", engine="pyarrow")

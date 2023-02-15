@@ -6,6 +6,7 @@ from scripts.message import Message
 from scripts.analysis import Analysis
 from scripts.json_set_encoder import SetEncoder
 import time
+import emoji
 
 st.set_page_config(page_title="WhatsApp Stats")
 st.sidebar.markdown("# Chat Explorer")
@@ -186,9 +187,12 @@ else:
             options=analysis.get_chat_participants()
         )
     most_common_words_per_user = analysis.get_most_common_words_per_user(selected_user)
-    with col12:
+    with col12: # better way to do it?
         for word in most_common_words_per_user:
-            st.write(word)
+            if emoji.is_emoji(emoji.emojize(":"+word+":")): # if it is an emoji represent it as one
+                st.write(emoji.emojize(":"+word+":"))
+            else:
+                st.write(word) # otherwise just write as text
 
     st.markdown("---")
     st.markdown('''
