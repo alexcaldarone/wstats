@@ -1,6 +1,6 @@
 import datetime
 import dateutil.parser as datepars
-
+import re
 
 class Message:
     """
@@ -22,18 +22,27 @@ class Message:
             Contains the weekday on which the day was sent
     """
 
+    # utility attibute used to determine wheter a message is a link or not
+    __link_finder = re.compile("http(s://|://)")
+
+    
     def __init__(self, chatline):
         """constructor"""
-        self.date = datepars.parse(chatline.split(',')[
-                                       0])  # this object is created only if the message is valid (tested before the message is created)
+        self.date = datepars.parse(chatline.split(',')[0],
+                                   dayfirst=True) # this object is created only if the message is valid (tested before the message is created) the first number is interpreted as a day 
         self.__datelen = len(chatline.split(',')[0])
-        self.time = chatline.split(',')[1][1:6]
+        self.time = chatline.split(',')[1][1:6] # change this to time object to handle better in analysis?
         self.__timelen = self.__datelen + 1 + len(self.time)
-        self.author = self.get_author(chatline)
-        self.__authlen = self.__timelen + 3 + len(self.author) + 2  # length of string until end of author name
-        self.content = self.get_content(chatline)
-        self.type = self.get_type(chatline)
+        self.author = self.def_author(chatline)
+        self.__authlen = self.__timelen + 3 + len(self.author) + 2 # length of string until end of author name
+        self.content = self.def_content(chatline)
+        self.type = self.def_type(chatline)
         self.weekday = self.weekDayMessage()
+    
+    def to_list(self):
+        attributes = [a for a in vars(self) if not a.startswith('_')]
+        return [self.__getattribute__(a) for a in attributes]
+    
 
     def is_valid_message(self, line):
         """
@@ -114,10 +123,11 @@ class Message:
             messType: str
                 Type of the message
         """
-        if '<Media omitted>' in chatline[self.__authlen:]:
+        m = self.__link_finder.search(chatline[self.__authlen:])
+        if m:
+            messType = "Link"
+        elif '<Media omitted>' in chatline[self.__authlen:]:
             messType = 'Media'
-        elif 'https://' in chatline[self.__authlen:]:
-            messType = 'Link'
         else:
             messType = 'Text'
         return messType
@@ -133,13 +143,3 @@ class Message:
         weekNum = {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
         weekday = self.date.weekday()
         return weekNum[weekday]
-
-
-if __name__ == '__main__':
-    line = '03/07/2017, 12:34 - Joe: <Media omitted>'
-    m = Message(line)
-    print(m)
-    print(m.date)
-    print(len(str(m.date)))
-    print(m.time)
-    print(m.is_valid_message(line))
