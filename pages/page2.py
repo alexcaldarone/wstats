@@ -6,7 +6,7 @@ from scripts.classifier import NaiveBayesClassifier
 st.set_option('deprecation.showPyplotGlobalUse', False) # silence matplotlib deprecation warnings
 st.set_page_config(page_title="WhatsApp Stats")
 st.sidebar.markdown("# Message Classifier")
-st.sidebar.markdown("Who is most likely to have written a messgae?")
+st.sidebar.markdown("Who is most likely to have written a message?")
 st.sidebar.markdown("Find out!")
 
 st.title("Message Classifier")

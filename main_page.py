@@ -1,15 +1,16 @@
 import streamlit as st
 import matplotlib.pyplot as plt
-import json
-from io import StringIO, BytesIO
+from io import StringIO
+import emoji
+
 from scripts.message import Message
 from scripts.analysis import Analysis
-from scripts.json_set_encoder import SetEncoder
-import time
-import emoji
 
 st.set_page_config(page_title="WhatsApp Stats")
 st.sidebar.markdown("# Chat Explorer")
+st.sidebar.markdown("""
+    Use this page to explore you WhatsApp chats!
+""")
 st.title("WhatsApp Stats")
 st.markdown(''' #### _Discover the **secrets** behind your chats!_
 
