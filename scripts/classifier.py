@@ -12,14 +12,20 @@ from sklearn.naive_bayes import MultinomialNB
 class NaiveBayesClassifier():
     """
     Class used to define the training pipeline used for the model and to make predictions.
+
+    Attributes
     """
+    def __init__(self):
+        self.raw_data = None
+        self.f1_score = None
+        self.confusion_matrix = None
 
     def get_raw_data(self, file):
         """
         Reads a parquet file and initializes the raw_data attribute where the data is stored as a pandas dataframe
         """
         self.raw_data = pd.read_parquet(file,
-                                            engine="pyarrow")
+                                        engine="pyarrow")
     
     def create_corpus(self):
         """
@@ -55,7 +61,7 @@ class NaiveBayesClassifier():
         train_data, test_data, train_label, test_label = train_test_split(self.raw_data["tokenized"],
                                                                           Y,
                                                                           train_size=0.8,
-                                                                          random_state=1)
+                                                                          random_state=2)
         
         vectorizer = CountVectorizer(ngram_range=(1,3)) 
         train_vects = vectorizer.fit_transform(train_data)
@@ -73,20 +79,17 @@ class NaiveBayesClassifier():
 
         best_nb_classifier = multinomial_grid_search.best_estimator_ # grabbing the best estimator
         test_preds = best_nb_classifier.predict(test_vects) # make prediction on the test set using best estimator
-        print('Validation F1 score with grid searchc: {}'.format(metrics.f1_score(test_preds, test_label, average='macro'))) # print out the f1 score
-
-        # cv_score = cross_validate(best_nb_classifier, test_vects, test_label, cv=5)
+        self.f1_score = metrics.f1_score(test_preds, test_label, average='macro') # save the f1 score
 
         fig, ax = plt.subplots(figsize=(15,8))
-        disp = ConfusionMatrixDisplay.from_estimator(best_nb_classifier,
-                                                     test_vects,
-                                                     test_label,
-                                                     normalize="true",
-                                                     ax=ax)
-        plt.show()
+        self.confuzion_matrix = ConfusionMatrixDisplay.from_estimator(best_nb_classifier,
+                                                                      test_vects,
+                                                                      test_label,
+                                                                      normalize="true",
+                                                                      ax=ax)
 
         return best_nb_classifier, vectorizer
-
+    
 
     def classify_text(self, text, classifier, vectorizer, labels=None):
         """

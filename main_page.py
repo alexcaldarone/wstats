@@ -187,7 +187,7 @@ else:
             options=analysis.get_chat_participants()
         )
     most_common_words_per_user = analysis.get_most_common_words_per_user(selected_user)
-    with col12: # better way to do it?
+    with col12: # better way to detect if a string is an emoji or not?
         for word in most_common_words_per_user:
             if word[0] == ":" and word[-1] == ":" and emoji.is_emoji(emoji.emojize(f"{word}")): emoji_string = word
             elif word.startswith(":") and emoji.is_emoji(emoji.emojize(f"{word}:")): emoji_string = word+":"
