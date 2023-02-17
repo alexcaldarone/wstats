@@ -2,9 +2,15 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from io import StringIO
 import emoji
+import nltk
 
 from scripts.message import Message
 from scripts.analysis import Analysis
+
+nltk.download("punkt", quiet=True)
+nltk.download("stopwords", quiet=True)
+nltk.download("omw", quiet=True)
+nltk.download("wordnet", quiet=True)
 
 st.set_page_config(page_title="WhatsApp Stats")
 st.sidebar.markdown("# Chat Explorer")

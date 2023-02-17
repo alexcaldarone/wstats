@@ -1,10 +1,17 @@
 from scripts.message import Message
-import nltk
-from nltk.corpus import stopwords
+
 import pandas as pd
 from collections import Counter
 import emoji
 import streamlit as st
+
+import nltk
+nltk.download("punkt", quiet=True)
+nltk.download("stopwords", quiet=True)
+nltk.download("omw", quiet=True)
+nltk.download("wordnet", quiet=True)
+from nltk.corpus import stopwords
+
 
 # grabbing stpowords from nltk
 english_stop_words = stopwords.words("english")
