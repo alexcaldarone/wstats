@@ -1,6 +1,7 @@
 from scripts.message import Message
 
 import pandas as pd
+import numpy as np
 from collections import Counter
 import emoji
 import streamlit as st
@@ -40,7 +41,8 @@ class Analysis:
         self.__tempList = []
         self.__textSubDdf = None
     
-    def update_list(self, message: Message):
+    def update_list(self, 
+                    message: Message) -> Message:
         """
         Updates the list containing the chat's messages.
         To store each message the Message object is converted to a list.
@@ -59,7 +61,8 @@ class Analysis:
         return self.__tempList[-1] # returns the last message added
 
 
-    def update_last_message(self, line: str):
+    def update_last_message(self, 
+                            line: str) -> None:
         """
         Updates the content of the last chat message analyzed.
         This is necessary when a new line does not corrispond with a new message.
@@ -75,7 +78,7 @@ class Analysis:
         self.__tempList[-1][CONTENT_INDEX] += line
 
    
-    def generate_dataframe(self):
+    def generate_dataframe(self) -> None:
         """
         Generates the dataframe containing the chat's data.
         This is done by converting the previously created list to a dataframe.
@@ -95,7 +98,7 @@ class Analysis:
     #
 
     
-    def get_messages_per_day_per_user(self):
+    def get_messages_per_day_per_user(self) -> pd.Series:
         """
         Counts the number of messages sent each day by each user
 
@@ -107,7 +110,7 @@ class Analysis:
         return self.stats.groupby(["Date", "Author"])["Content"].count()
 
     
-    def get_messages_per_user(self):
+    def get_messages_per_user(self) -> pd.Series:
         """
         Counts the total number of messages sent by each user
 
@@ -119,7 +122,7 @@ class Analysis:
         return self.stats.groupby("Author")["Content"].count()
 
     
-    def get_messages_per_day(self):
+    def get_messages_per_day(self) -> pd.Series:
         """
         Counts the number of messages sent each day (by all users)
 
@@ -131,7 +134,7 @@ class Analysis:
         return self.stats.groupby("Date")["Content"].count()
 
     
-    def get_messages_by_type(self):
+    def get_messages_by_type(self) -> pd.Series:
         """
         Counts the number of messages for each message type (text, media, link)
 
@@ -157,7 +160,7 @@ class Analysis:
         return pd.Series(data=res, index=types_available)
 
     
-    def get_messages_by_weekday(self):
+    def get_messages_by_weekday(self) -> pd.Series:
         """
         Counts the number of messages sent on each weekday
 
@@ -184,7 +187,7 @@ class Analysis:
         return pd.Series(data=res, index=weekdays, name="messages_per_weekday") 
 
     
-    def get_messages_by_hour(self):
+    def get_messages_by_hour(self) -> pd.Series:
         """
         Counts the number of messages sent each hour
 
@@ -210,7 +213,7 @@ class Analysis:
         return pd.Series(data=res, index=range(0, 24))
 
     
-    def get_messages_by_hour_by_user(self):
+    def get_messages_by_hour_by_user(self) -> pd.Series:
         """
         Counts the number of messages sent each hour by each user
 
@@ -223,7 +226,7 @@ class Analysis:
         return self.stats.groupby(["hour", "Author"]).count()
 
     
-    def average_message_length_by_user(self):
+    def average_message_length_by_user(self) -> pd.Series:
         """
         Counts the average length of each user's messagges
 
@@ -238,7 +241,7 @@ class Analysis:
         return self.stats.groupby("Author")["message_length"].mean()
 
     
-    def chats_started_by_user(self): # how to do better ?
+    def chats_started_by_user(self) -> pd.Series: # how to do better ?
         """
         Counts the number of conversations started by each user
 
@@ -260,7 +263,7 @@ class Analysis:
         return chat_starters.groupby("Author")["Date"].count()
 
     
-    def get_chat_participants(self):
+    def get_chat_participants(self) -> np.ndarray:
         """
         Returns the participants in the chat
 
@@ -278,13 +281,13 @@ class Analysis:
     # TEXT REGULARIZATION AND NLP METHODS
     #
     
-    def __createTextSubDataFrame(self):
+    def __createTextSubDataFrame(self) -> bool:
         if self.stats is not None:
             self.__textSubDdf = self.stats[self.stats["Type"] == "Text"]
         return True
     
     
-    def get_most_common_words(self):
+    def get_most_common_words(self) -> dict:
         """
         Returns a dictionary with the words that appear in the chat and their count
 
@@ -303,7 +306,8 @@ class Analysis:
         return words
     
     
-    def get_most_common_words_per_user(self, user):
+    def get_most_common_words_per_user(self, 
+                                       user: str) -> list:
         """
         Returns the most common words used by each user
         
@@ -313,8 +317,8 @@ class Analysis:
                 Chat participant
         Returns
         --------------------
-            user_words: dict
-                Dictionary with most common words that appear in the user's messages
+            most_common_words: list
+                 List with the user's 5 most common words
         """
         if user not in self.get_chat_participants():
             raise Exception(f"{user} not in the chat participants!")
@@ -335,7 +339,8 @@ class Analysis:
         return most_common_words[:5] # return only top 5 words
     
     
-    def get_count_of_word(self, word):
+    def get_count_of_word(self, 
+                          word: str) -> int:
         """
         Returns the number of times the input word appaeared in the chat
         
@@ -361,7 +366,8 @@ class Analysis:
         return words[word.lower()] # otherwise return the number of times it appeared
     
     
-    def get_count_of_word_per_conversation(self, word):
+    def get_count_of_word_per_conversation(self, 
+                                           word: str) -> pd.Series:
         """
         Returns the number of times a word appears in each conversation.
 
@@ -395,7 +401,7 @@ class Analysis:
         return pd.Series(data=word_appearances, index=dates)
 
     
-    def text_regularization(self):
+    def text_regularization(self) -> pd.DataFrame:
         """
         Method to regularize the chat messages
         """
@@ -430,7 +436,7 @@ class Analysis:
         return self.__textSubDdf
     
     @st.cache
-    def export_to_classifier(self):
+    def export_to_classifier(self) -> pd.DataFrame:
         """
         Export the tokenized messages and the author columns as a parquet file.
         """

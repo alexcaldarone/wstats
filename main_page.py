@@ -7,11 +7,6 @@ import nltk
 from scripts.message import Message
 from scripts.analysis import Analysis
 
-nltk.download("punkt", quiet=True)
-nltk.download("stopwords", quiet=True)
-nltk.download("omw", quiet=True)
-nltk.download("wordnet", quiet=True)
-
 st.set_page_config(page_title="WhatsApp Stats")
 st.sidebar.markdown("# Chat Explorer")
 st.sidebar.markdown("""

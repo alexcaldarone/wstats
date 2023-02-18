@@ -26,7 +26,8 @@ class Message:
     __link_finder = re.compile("http(s://|://)")
 
     
-    def __init__(self, chatline):
+    def __init__(self, 
+                 chatline: str) -> None:
         """constructor"""
         self.date = datepars.parse(chatline.split(',')[0],
                                    dayfirst=True) # this object is created only if the message is valid (tested before the message is created) the first number is interpreted as a day 
@@ -39,12 +40,13 @@ class Message:
         self.type = self.get_type(chatline)
         self.weekday = self.weekDayMessage()
     
-    def to_list(self):
+    def to_list(self) -> list:
         attributes = [a for a in vars(self) if not a.startswith('_')]
         return [self.__getattribute__(a) for a in attributes]
     
 
-    def is_valid_message(self, line):
+    def is_valid_message(self, 
+                         line: str) -> bool:
         """
         Determines whether a line from the file is a valid message or the continuation of the previous message.
         A message is valid if the first characters are the date and the time of the message,
@@ -65,7 +67,7 @@ class Message:
         except Exception as e:
             return False
 
-    def __str__(self):
+    def __str__(self) -> str:
         """conversion to string"""
 
         return 'Author: {}, Date: {}, Time: {}, Type: {} \nContent: {}'.format(
@@ -76,7 +78,8 @@ class Message:
             self.content,
         )
 
-    def get_author(self, chatline):
+    def get_author(self, 
+                   chatline: str) -> str:
         """
         Determines the author of the message
 
@@ -94,7 +97,8 @@ class Message:
 
         return authstr.split(':')[0]
 
-    def get_content(self, chatline):
+    def get_content(self, 
+                    chatline: str) -> str:
         """
         Returns the content of the message
 
@@ -109,7 +113,8 @@ class Message:
         """
         return chatline[self.__authlen:]
 
-    def get_type(self, chatline):
+    def get_type(self, 
+                 chatline: str) -> str:
         """
         Returns the type of the message
 
@@ -132,7 +137,7 @@ class Message:
             messType = 'Text'
         return messType
 
-    def weekDayMessage(self):
+    def weekDayMessage(self) -> str:
         """
         Returns the day of the week on which the message was sent
 

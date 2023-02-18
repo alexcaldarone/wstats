@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from typing import Tuple, Union
 from sklearn import metrics
 from sklearn import model_selection
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
@@ -15,19 +16,20 @@ class NaiveBayesClassifier():
 
     Attributes
     """
-    def __init__(self):
+    def __init__(self) -> None:
         self.raw_data = None
         self.f1_score = None
         self.confusion_matrix = None
 
-    def get_raw_data(self, file):
+    def get_raw_data(self, 
+                     file) -> None:
         """
         Reads a parquet file and initializes the raw_data attribute where the data is stored as a pandas dataframe
         """
         self.raw_data = pd.read_parquet(file,
                                         engine="pyarrow")
     
-    def create_corpus(self):
+    def create_corpus(self) -> list:
         """
         Converts the elements in the tokenized column from lists to strings and creates a list containing the corpus
         used to train the model.
@@ -44,7 +46,7 @@ class NaiveBayesClassifier():
             corpus.append(st)
         return corpus # don't need corpus list ?
     
-    def training_pipeline(self):
+    def training_pipeline(self) -> Tuple[MultinomialNB, CountVectorizer]:
         """
         Method to contain the training pipeline for the model.
         Returns the best estimator found and the vectorizer used in the training process
@@ -91,7 +93,11 @@ class NaiveBayesClassifier():
         return best_nb_classifier, vectorizer
     
 
-    def classify_text(self, text, classifier, vectorizer, labels=None):
+    def classify_text(self, 
+                      text: str, 
+                      classifier: MultinomialNB, 
+                      vectorizer: CountVectorizer, 
+                      labels: list = None) -> Tuple[Union[str, int], float]:
         """
         Method to classify a given piece of text
 
@@ -99,7 +105,7 @@ class NaiveBayesClassifier():
         --------------------
             text: str
                 Piece of text to classify
-            classifier: ..
+            classifier: MultinomialNB
                 Classifier used to classify the text
             vectorizer: CountVectorizer
                 Vectorizer used to vectorize the piece of text to classify
