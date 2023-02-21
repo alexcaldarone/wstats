@@ -12,4 +12,5 @@ With this simple app you will be able to analyze:
 
 
 # TO DO:
-4. Rewrite test to accomodate the refactor from json to pandas dataframe in analysis class
+- Rewrite test to accomodate the refactor from json to pandas dataframe in analysis class
+- Add linter
