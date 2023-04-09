@@ -5,6 +5,9 @@ import numpy as np
 from collections import Counter
 import emoji
 import streamlit as st
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from operator import add
 
 import nltk
 nltk.download("punkt", quiet=True)
@@ -21,12 +24,6 @@ stop_words = set(english_stop_words + italian_stop_words)
 
 class Analysis:
     """
-    Extra features to add:
-        --- frequency of most used words by each user (nltk.freqDist)
-        --- possibility to choose a word and see how many times it has been used (globally and for each user)
-        - chat and user wordcloud
-        - sentiment analysis
-
     A class to contain the statistics of a whatsapp chat
 
     Attributes
@@ -435,6 +432,29 @@ class Analysis:
 
         return self.__textSubDdf
     
+    def cosine_similarity(self, author1, author2):
+        dates = self.__textSubDdf["Date"].unique()
+        similarities = [] # create a pandas series ?
+        vecotrizer = TfidfVectorizer()
+        # a temporary array to store the vectorized messages
+        temp_array = vecotrizer.fit_transform(self.__textSubDdf["Content"]).toarray().tolist()
+        self.__textSubDdf["vectorized"] = temp_array
+
+        for i, date in enumerate(dates):
+            author1_mex = self.__textSubDdf[(self.__textSubDdf["Date"] == date) &
+                                           (self.__textSubDdf["Author"] == author1)]
+            author2_mex = self.__textSubDdf[(self.__textSubDdf["Date"] == date) &
+                                           (self.__textSubDdf["Author"] == author2)]
+            
+            if len(author1_mex["vectorized"]) > 0 and len(author2_mex["vectorized"]) > 0:
+                author1_vect = pd.DataFrame(author1_mex["vectorized"].tolist()).sum()
+                author2_vect = pd.DataFrame(author2_mex["vectorized"].tolist()).sum()
+                cos_sim = cosine_similarity(np.array(author1_vect).reshape(1, -1),
+                                            np.array(author2_vect).reshape(1, -1))
+                similarities.append(cos_sim[0][0])
+            
+        return similarities
+
     @st.cache
     def export_to_classifier(self) -> pd.DataFrame:
         """
