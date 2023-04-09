@@ -224,7 +224,7 @@ else:
                        data=parquet_file,
                        file_name="classifier_data.parquet",
                        mime="application/octet-stream")
-
+    
     st.markdown("---")
     st.markdown('''
     Created by [Alex Caldarone](https://alexcaldarone.github.io/)''')

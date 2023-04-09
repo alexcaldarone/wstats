@@ -1,0 +1,43 @@
+,Date,Time,Author,Content,Type,Weekday,hour,message_length
+0,2022-03-29,20:09,User1,"Hey, what's up?",Text,Tuesday,20,3
+1,2022-03-29,20:09,User2,"Not much, just watching a movie. You?",Text,Tuesday,20,7
+2,2022-03-29,20:09,User1,Same here. Which movie are you watching?,Text,Tuesday,20,7
+3,2022-03-29,20:09,User2,I'm watching The Godfather. It's a classic.,Text,Tuesday,20,7
+4,2022-03-29,20:09,User1,"Oh cool, I love that movie. Do you have any other recommendations?",Text,Tuesday,20,12
+5,2022-03-29,20:10,User2,"Yeah, have you seen Parasite? It's really good.",Text,Tuesday,20,8
+6,2022-03-29,20:11,User1,"No, I haven't. I'll check it out. Thanks for the recommendation!",Text,Tuesday,20,11
+7,2022-03-29,20:11,User2,No problem. Let me know what you think of it.,Text,Tuesday,20,10
+8,2022-03-31,11:24,User1,"Hey, did you watch Parasite?",Text,Thursday,11,5
+9,2022-03-31,11:25,User2,"Yeah, I did. What did you think of it?",Text,Thursday,11,9
+10,2022-03-31,11:25,User1,It was amazing! I loved the plot and the characters.,Text,Thursday,11,10
+11,2022-03-31,11:25,User2,I'm glad you enjoyed it. It's one of my favorite movies.,Text,Thursday,11,11
+12,2022-03-31,11:26,User1,"Yeah, I can see why. By the way, have you seen this funny meme?",Text,Thursday,11,14
+13,2022-03-31,11:26,User1,<Media omitted>,Media,Thursday,11,2
+14,2022-03-31,11:26,User2,"Haha, that's hilarious! Where did you find that?",Text,Thursday,11,8
+15,2022-03-31,11:27,User1,I saw it on Instagram. I couldn't stop laughing.,Text,Thursday,11,9
+16,2022-03-31,11:27,User2,Thanks for sharing it with me. I needed a good laugh today.,Text,Thursday,11,12
+17,2022-04-10,16:46,User1,"Hey, I have some news to share.",Text,Sunday,16,7
+18,2022-04-10,16:46,User2,What's up?,Text,Sunday,16,2
+19,2022-04-10,16:47,User1,I got accepted into my dream college! I'm so excited.,Text,Sunday,16,10
+20,2022-04-10,16:47,User2,Congratulations! That's amazing news. I'm happy for you.,Text,Sunday,16,8
+21,2022-04-10,16:47,User1,"Thanks, I couldn't have done it without your support.",Text,Sunday,16,9
+22,2022-04-10,16:48,User2,Anytime. When do you start?,Text,Sunday,16,5
+23,2022-04-10,16:48,User1,I start in the fall. I can't wait to start this new chapter in my life.,Text,Sunday,16,16
+24,2022-04-10,16:48,User2,That's great. We should celebrate once you start.,Text,Sunday,16,8
+25,2022-04-10,16:49,User1,Absolutely! I'll let you know when I'm settled in.,Text,Sunday,16,9
+26,2022-04-15,10:04,User1,"Hey, I found this cool video on YouTube. Check it out.",Text,Friday,10,11
+27,2022-04-15,10:04,User1,<Media omitted>,Media,Friday,10,2
+28,2022-04-15,10:04,User2,"Wow, that's impressive! That cat has some serious talent.",Text,Friday,10,9
+29,2022-04-15,10:05,User1,"I know, right? It's amazing what animals can do.",Text,Friday,10,9
+30,2022-04-15,10:05,User2,"Yeah, they're incredible creatures. Speaking of animals, did you hear about the new zoo that opened up in town?",Text,Friday,10,19
+31,2022-04-15,10:05,User1,"No, I didn't. When did it open?",Text,Friday,10,7
+32,2022-04-15,10:05,User2,It opened last week. We should go check it out sometime.,Text,Friday,10,11
+33,2022-04-15,10:06,User1,That sounds like fun. Let's plan a day to go together.,Text,Friday,10,11
+34,2022-04-15,10:06,User2,Sounds good to me. I'll look up the hours and ticket prices.,Text,Friday,10,12
+35,2022-04-21,19:37,User1,"Hey, I'm sorry I couldn't reply earlier. I was busy with some family stuff.",Text,Thursday,19,14
+36,2022-04-21,19:37,User2,"No worries, everything okay?",Text,Thursday,19,4
+37,2022-04-21,19:37,User1,"Yeah, everything's fine now. Thanks for asking.",Text,Thursday,19,7
+38,2022-04-21,19:38,User2,Of course. Is there anything I can do to help?,Text,Thursday,19,10
+39,2022-04-21,19:38,User1,"No, it's all good now. I appreciate your concern though.",Text,Thursday,19,10
+40,2022-04-21,19:38,User2,"Anytime. If you need anything, don't hesitate to ask.",Text,Thursday,19,9
+41,2022-04-21,19:38,User1,"Thanks, I won't forget that.",Text,Thursday,19,5
