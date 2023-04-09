@@ -433,6 +433,9 @@ class Analysis:
         return self.__textSubDdf
     
     def cosine_similarity(self, author1, author2):
+        # here i'm converting the arrays to lists, storing them as 
+        # a column and then converting it again to list and then
+        # dataframe. it's repetitive. how can i make it more efficient?.
         dates = self.__textSubDdf["Date"].unique()
         similarities = [] # create a pandas series ?
         vecotrizer = TfidfVectorizer()
@@ -440,6 +443,8 @@ class Analysis:
         temp_array = vecotrizer.fit_transform(self.__textSubDdf["Content"]).toarray().tolist()
         self.__textSubDdf["vectorized"] = temp_array
 
+        # could i do it with a "cumulative sum" of the vectors
+        # over the dates where the conditions are respected
         for i, date in enumerate(dates):
             author1_mex = self.__textSubDdf[(self.__textSubDdf["Date"] == date) &
                                            (self.__textSubDdf["Author"] == author1)]

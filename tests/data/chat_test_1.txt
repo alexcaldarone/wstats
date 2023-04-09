@@ -1,8 +1,43 @@
 29/03/22, 20:09 - I messaggi e le chiamate sono crittografati end-to-end. Nessuno al di fuori di questa chat, nemmeno WhatsApp, può leggerne o ascoltarne il contenuto. Tocca per saperne di più.
-29/03/22, 20:09 - User1: Hello,
-29/03/22, 20:09 - User1: I am here
-29/03/22, 20:09 - User1: This is a line with comma,
-29/03/22, 20:09 - User1: Another one with multiple commas,,,,
-29/03/22, 20:09 - User1: ,casual commas,,
-29/03/22, 20:10 - User2: Ok
-29/03/22, 20:10 - User2: .
+29/03/22, 20:09 - User1: Hey, what's up?
+29/03/22, 20:09 - User2: Not much, just watching a movie. You?
+29/03/22, 20:09 - User1: Same here. Which movie are you watching?
+29/03/22, 20:09 - User2: I'm watching The Godfather. It's a classic.
+29/03/22, 20:09 - User1: Oh cool, I love that movie. Do you have any other recommendations?
+29/03/22, 20:10 - User2: Yeah, have you seen Parasite? It's really good.
+29/03/22, 20:11 - User1: No, I haven't. I'll check it out. Thanks for the recommendation!
+29/03/22, 20:11 - User2: No problem. Let me know what you think of it.
+31/03/22, 11:24 - User1: Hey, did you watch Parasite?
+31/03/22, 11:25 - User2: Yeah, I did. What did you think of it?
+31/03/22, 11:25 - User1: It was amazing! I loved the plot and the characters.
+31/03/22, 11:25 - User2: I'm glad you enjoyed it. It's one of my favorite movies.
+31/03/22, 11:26 - User1: Yeah, I can see why. By the way, have you seen this funny meme?
+31/03/22, 11:26 - User1: <Media omitted>
+31/03/22, 11:26 - User2: Haha, that's hilarious! Where did you find that?
+31/03/22, 11:27 - User1: I saw it on Instagram. I couldn't stop laughing.
+31/03/22, 11:27 - User2: Thanks for sharing it with me. I needed a good laugh today.
+10/04/22, 16:46 - User1: Hey, I have some news to share.
+10/04/22, 16:46 - User2: What's up?
+10/04/22, 16:47 - User1: I got accepted into my dream college! I'm so excited.
+10/04/22, 16:47 - User2: Congratulations! That's amazing news. I'm happy for you.
+10/04/22, 16:47 - User1: Thanks, I couldn't have done it without your support.
+10/04/22, 16:48 - User2: Anytime. When do you start?
+10/04/22, 16:48 - User1: I start in the fall. I can't wait to start this new chapter in my life.
+10/04/22, 16:48 - User2: That's great. We should celebrate once you start.
+10/04/22, 16:49 - User1: Absolutely! I'll let you know when I'm settled in.
+15/04/22, 10:04 - User1: Hey, I found this cool video on YouTube. Check it out.
+15/04/22, 10:04 - User1: <Media omitted>
+15/04/22, 10:04 - User2: Wow, that's impressive! That cat has some serious talent.
+15/04/22, 10:05 - User1: I know, right? It's amazing what animals can do.
+15/04/22, 10:05 - User2: Yeah, they're incredible creatures. Speaking of animals, did you hear about the new zoo that opened up in town?
+15/04/22, 10:05 - User1: No, I didn't. When did it open?
+15/04/22, 10:05 - User2: It opened last week. We should go check it out sometime.
+15/04/22, 10:06 - User1: That sounds like fun. Let's plan a day to go together.
+15/04/22, 10:06 - User2: Sounds good to me. I'll look up the hours and ticket prices.
+21/04/22, 19:37 - User1: Hey, I'm sorry I couldn't reply earlier. I was busy with some family stuff.
+21/04/22, 19:37 - User2: No worries, everything okay?
+21/04/22, 19:37 - User1: Yeah, everything's fine now. Thanks for asking.
+21/04/22, 19:38 - User2: Of course. Is there anything I can do to help?
+21/04/22, 19:38 - User1: No, it's all good now. I appreciate your concern though.
+21/04/22, 19:38 - User2: Anytime. If you need anything, don't hesitate to ask.
+21/04/22, 19:38 - User1: Thanks, I won't forget that.
