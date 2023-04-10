@@ -292,7 +292,7 @@ class Analysis:
             words: dict
                 Dictionary with word frequency
         """
-        if self.__textSubDdf == None:
+        if self.__textSubDdf is None:
             self.__createTextSubDataFrame()
 
         words = Counter(
