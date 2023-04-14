@@ -1,9 +1,17 @@
 import unittest
 from datetime import datetime
 from scripts.message import Message
-
+import pandas as pd
 
 class TestMessage(unittest.TestCase):
+
+    def setUp(self):
+
+        with open("tests/data/chat_test_1_ref", "r") as f:
+            self.reference_df = pd.read_csv(f)
+
+    def tearDown(self):
+        self.reference_df = None
 
     def test_is_valid_message(self):
         """
@@ -13,6 +21,9 @@ class TestMessage(unittest.TestCase):
         with open('tests/data/chat_test_1.txt', 'r') as f:
 
             for i, line in enumerate(f):
+                
+                if i == 0:
+                    continue
 
                 message = Message(line)
 
@@ -22,80 +33,81 @@ class TestMessage(unittest.TestCase):
         """
         Tests that the date attribute of the chat messages is created correctly
         """
-        reference_date = datetime(year=2022, month=3, day=29)
+        reference_dates = self.reference_df["Date"]
 
-        with open('tests/data/chat_test_1.txt', 'r') as f:
-
+        with open("tests/data/chat_test_1.txt", "r") as f:
+        
             for i, line in enumerate(f):
-
+                if i == 0:
+                    continue
+                
                 message = Message(line)
 
-                self.assertEqual(message.date, reference_date)
+                self.assertEqual(str(message.date)[:-9], reference_dates[i-1])
 
     def test_time(self):
         """
         Test the time attribute
         """
-        time1 = "20:09"
-        time2 = "20:10"
-        time3 = "21:10"
+        reference_times = self.reference_df["Time"]
 
-        with open('tests/data/chat_test_1.txt', 'r') as f:
+        with open("tests/data/chat_test_1.txt", "r") as f:
 
             for i, line in enumerate(f):
+                if i == 0:
+                    continue
 
                 message = Message(line)
 
-                if i < 6:
-                    self.assertEqual(message.time, time1)
-                    self.assertEqual(message.time == time3, False)
-                else:
-                    self.assertEqual(message.time, time2)
+                self.assertEqual(message.time, reference_times[i-1])
 
     def test_author(self):
         """
         Test the author attribute
         """
+        reference_authors = self.reference_df["Author"]
 
-        with open('tests/data/chat_test_1.txt', 'r') as f:
+        with open("tests/data/chat_test_1.txt", "r") as f:
 
             for i, line in enumerate(f):
+                if i == 0:
+                    continue
 
                 message = Message(line)
 
-                if i in [x for x in range(1, 6)]:
-                    self.assertEqual(message.author == 'User1', True)
-                    self.assertEqual(message.author == 'User2', False)
-
-                if i in [x for x in range(6, 8)]:
-                    self.assertEqual(message.author == 'User2', True)
-                    self.assertEqual(message.author == 'User1', False)
+                self.assertEqual(message.author, reference_authors[i-1])
 
     def test_type(self):
         """
         Test the type attribute
         """
+        reference_types = self.reference_df["Type"]
 
-        with open('tests/data/chat_test_1.txt', 'r') as f:
+        with open("tests/data/chat_test_1.txt", "r") as f:
 
             for i, line in enumerate(f):
+                if i == 0:
+                    continue
 
                 message = Message(line)
 
-                self.assertTrue(message.type, "Text")
+                self.assertEqual(message.type, reference_types[i-1])
 
     def test_weekday(self):
         """
         Test the weekday attribute
         """
+        reference_weekdays = self.reference_df["Weekday"]
 
-        with open('tests/data/chat_test_1.txt', 'r') as f:
+        with open("tests/data/chat_test_1.txt", "r") as f:
 
             for i, line in enumerate(f):
+                if i == 0:
+                    continue
 
                 message = Message(line)
 
-                self.assertTrue(message.weekday, "Tuesday")
+                self.assertEqual(message.weekday, reference_weekdays[i-1])
 
     def test_content(self):
         """
@@ -103,22 +115,17 @@ class TestMessage(unittest.TestCase):
 
         We need to verify that for every message object the content attribute is equal to the text contained in the file
         """
-        messages = [
-            " Hello,",
-            " I am here",
-            " This is a line with comma,",
-            " Another one with multiple commas,,,,",
-            " ,casual commas,,",
-            " Ok",
-            " ."
-        ]
+        reference_content = self.reference_df["Content"]
 
-        with open('tests/data/chat_test_1.txt', 'r') as f:
+        with open("tests/data/chat_test_1.txt", "r") as f:
 
-            for i, line in enumerate(f.readlines()[1:]):
+            for i, line in enumerate(f):
+                if i == 0:
+                    continue
 
-                message = Message(line.strip())
-                self.assertEqual(message.content, messages[i])
+                message = Message(line)
+
+                self.assertEqual(message.content.strip(), reference_content[i-1])
 
 
 if __name__ == '__main__':
