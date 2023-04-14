@@ -201,6 +201,17 @@ else:
 
             if emoji_string: st.write(emoji.emojize(emoji_string))
             else: st.write(word)
+    
+    # cosine similarity
+    st.header("How similar are the messages?")
+    st.write("Using cosine similarity we can determine how 'similar' the messages written are.")
+    options = st.multiselect("Choose two authors to compare:",
+                            analysis.get_chat_participants())
+    if len(options) == 2:
+        similarities = analysis.cosine_similarity(options[0], options[1])
+        fig9, ax9 = plt.subplots()
+        ax9.plot(similarities)
+        st.pyplot(fig9)
 
     st.markdown("---")
     st.header("Export chat data to classifier")
@@ -213,7 +224,7 @@ else:
                        data=parquet_file,
                        file_name="classifier_data.parquet",
                        mime="application/octet-stream")
-
+    
     st.markdown("---")
     st.markdown('''
     Created by [Alex Caldarone](https://alexcaldarone.github.io/)''')
