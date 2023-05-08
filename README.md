@@ -2,6 +2,7 @@
 [![Tests](https://github.com/alexcaldarone/wstats/actions/workflows/tests.yml/badge.svg)](https://github.com/alexcaldarone/wstats/actions/workflows/tests.yml)
 
 # WhatsApp Stats
+WhatsApp Stats is a streamlit app that allows you to parse and analyze whatsapp chats! 
 
 With this simple app you will be able to analyze:
 - :iphone: The total number of messages sent by each participant
@@ -12,7 +13,24 @@ With this simple app you will be able to analyze:
 - :speech_balloon: Who is the conversation starter?
 - :memo: Who writes the longest messages on average?
 
+## Table of Contents
 
-# TO DO:
-- Rewrite test to accomodate the refactor from json to pandas dataframe in analysis class
+- [Usage](#usage)
+- [To Do](#todo)
+
+## Usage
+You can use this app directly on Streamlit through this [link](https://chatstats.streamlit.app/)
+
+Otherwise, to run this app locally you can run the following commands
+
+```shell
+git clone https://github.com/alexcaldarone/wstats.git
+cd wstats
+pip install -r requirements.txt
+python setup.py install
+streamlit run main_page.py
+```
+
+
+## To Do:
 - Add linter
