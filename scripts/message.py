@@ -32,6 +32,7 @@ class Message:
         self.date = datepars.parse(chatline.split(',')[0],
                                    dayfirst=True) # this object is created only if the message is valid (tested before the message is created) the first number is interpreted as a day 
         self.__datelen = len(chatline.split(',')[0])
+        print(chatline.split(","))
         self.time = chatline.split(',')[1][1:6] # change this to time object to handle better in analysis?
         self.__timelen = self.__datelen + 1 + len(self.time)
         self.author = self.get_author(chatline)
@@ -62,7 +63,8 @@ class Message:
             True if the message is valid, False otherwise
         """
         try:
-            if datepars.parse(line.split(',')[0]):
+            line_list = line.split(",")
+            if datepars.parse(line_list[0]) and len(line_list) > 1:
                 return True
         except Exception as e:
             return False
